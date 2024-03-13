@@ -17,7 +17,7 @@ const Sidebar = ({ mainContent, sidebarContent }: Props) => {
       </label>
       <div className="drawer md:drawer-open">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-        <div className="drawer-content flex flex-col items-center justify-center">
+        <div className="drawer-content flex items-start justify-start sm:pl-32 sm:pt-12">
           {mainContent()}
         </div>
         <div className="drawer-side rounded-e-xl">
