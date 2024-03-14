@@ -1,13 +1,14 @@
-import { createBrowserRouter } from "react-router-dom";
+import { Navigate, createBrowserRouter } from "react-router-dom";
 import ProjectPage from "../Pages/ProjectPage/ProjectPage";
 import DashboardPage from "../Pages/DashboardPage/DashboardPage";
 import IssuesList from "../Components/IssuesList/IssuesList";
 import Board from "../Components/Board/Board";
+import LandingPage from "../Pages/LandingPage/LandingPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <DashboardPage />,
+    element: <LandingPage />,
   },
   {
     path: "dashboard",
@@ -17,6 +18,10 @@ export const router = createBrowserRouter([
     path: "project",
     element: <ProjectPage />,
     children: [
+      {
+        path: "",
+        element: <Navigate to="issues" />,
+      },
       {
         path: "issues",
         element: <IssuesList />,
