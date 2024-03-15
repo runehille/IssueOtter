@@ -2,8 +2,8 @@ import { useLocation } from "react-router";
 
 const Breadcrumbs = () => {
   const location = useLocation();
-
   const paths = location.pathname.split("/").filter((path) => path !== "");
+
   return (
     <div className="text-sm breadcrumbs">
       <ul>

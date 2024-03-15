@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import CreateIssueModal from "../CreateIssueModal/CreateIssueModal";
 import { useEffect, useState } from "react";
 
@@ -6,43 +6,49 @@ const Navbar = () => {
   const [isDarkMode, setIsDarkMode] = useState(
     JSON.parse(localStorage.getItem("isDarkMode") as string)
   );
+  const location = useLocation();
+  const paths = location.pathname.split("/").filter((path) => path !== "");
+
   useEffect(() => {
     localStorage.setItem("isDarkMode", JSON.stringify(isDarkMode));
   }, [isDarkMode]);
 
   return (
-    <div className="navbar bg-base-100 shadow mb-2">
-      <div className="flex-1 space-x-5">
+    <div className="navbar bg-base-100 shadow">
+      <div className="flex-1 md:space-x-5">
         <Link
           to="/dashboard"
-          className="btn btn-ghost sm:mb-2 hover:bg-transparent"
+          className="btn btn-ghost md:mb-2 hover:bg-transparent"
         >
           <img
             src={isDarkMode ? "/otter-dark.svg" : "/otter.svg"}
             alt=""
-            className="sm:size-14 size-10 "
+            className="md:size-14 size-10"
           />
-          <p className="text-lg hidden sm:flex">IssueOtter</p>
+          <p className="text-lg hidden md:flex">IssueOtter</p>
         </Link>
 
-        <div className="dropdown">
-          <div tabIndex={0} role="button" className="btn m-1">
+        <div
+          className={`dropdown ${
+            paths.includes("project") ? "border-b-2 border-b-base-content" : ""
+          }`}
+        >
+          <div tabIndex={0} role="button" className="btn">
             Projects
           </div>
           <ul
             tabIndex={0}
-            className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+            className="dropdown-content z-[1] menu p-2 mt-1 shadow bg-base-100 rounded-box w-52"
           >
             <li>
               <Link to="/project">Demo Project</Link>
             </li>
           </ul>
         </div>
-      </div>
-
-      <div className="flex-1">
         <CreateIssueModal />
       </div>
+
+      {/* Light/Dark Mode, Searchbar, Avatar */}
       <div className="flex-none gap-2">
         <label className="swap swap-rotate">
           <input

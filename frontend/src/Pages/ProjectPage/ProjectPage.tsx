@@ -8,10 +8,7 @@ const ProjectPage = () => {
     <>
       <Navbar />
       <div className="container flex">
-        <label
-          htmlFor="my-drawer-2"
-          className="btn btn-sm md:hidden bg-secondary "
-        >
+        <label htmlFor="my-drawer-2" className="btn btn-sm md:hidden ">
           <FaAngleDoubleRight />
         </label>
         <div className="drawer md:drawer-open">
@@ -28,7 +25,7 @@ const ProjectPage = () => {
               aria-label="close sidebar"
               className="drawer-overlay"
             ></label>
-            <ul className="menu p-4 w-72 min-h-full sm:bg-base  text-base">
+            <ul className="menu p-4 w-72 min-h-full bg-base-200">
               <li>
                 <Link to="issues" className="text-lg">
                   Issues

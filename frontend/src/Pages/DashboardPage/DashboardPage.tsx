@@ -7,10 +7,7 @@ const DashboardPage = () => {
     <>
       <Navbar />
       <div className="container flex">
-        <label
-          htmlFor="my-drawer-2"
-          className="btn btn-sm md:hidden bg-secondary "
-        >
+        <label htmlFor="my-drawer-2" className="btn btn-sm md:hidden ">
           <FaAngleDoubleRight />
         </label>
         <div className="drawer md:drawer-open">
@@ -33,7 +30,7 @@ const DashboardPage = () => {
               aria-label="close sidebar"
               className="drawer-overlay"
             ></label>
-            <ul className="menu p-4 w-72 min-h-full bg-base text-base-content">
+            <ul className="menu p-4 w-72 min-h-full text-base-content bg-base-200">
               <li>
                 <Link to="#" className="text-lg">
                   Create New Project

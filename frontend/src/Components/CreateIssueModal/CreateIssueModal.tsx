@@ -3,8 +3,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 
 type CreateFormsInputs = {
-  title: string;
   project: string;
+  title: string;
   description: string;
 };
 
@@ -41,7 +41,7 @@ const CreateIssueModal = () => {
           ) as HTMLDialogElement)!.showModal()
         }
       >
-        Create Issue
+        Create <br /> Issue
       </button>
       <dialog id="my_modal_1" className="modal">
         <div className="modal-box">
