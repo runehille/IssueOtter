@@ -1,9 +1,14 @@
-import { Navigate, createBrowserRouter } from "react-router-dom";
+import { Navigate, createBrowserRouter, useParams } from "react-router-dom";
 import ProjectPage from "../Pages/ProjectPage/ProjectPage";
 import DashboardPage from "../Pages/DashboardPage/DashboardPage";
 import IssuesList from "../Components/IssuesList/IssuesList";
 import Board from "../Components/Board/Board";
 import LandingPage from "../Pages/LandingPage/LandingPage";
+
+const ProjectPageWrapper = () => {
+  const { key } = useParams();
+  return <ProjectPage key={key} />;
+};
 
 export const router = createBrowserRouter([
   {
@@ -15,8 +20,8 @@ export const router = createBrowserRouter([
     element: <DashboardPage />,
   },
   {
-    path: "project",
-    element: <ProjectPage />,
+    path: "project/:key",
+    element: <ProjectPageWrapper />,
     children: [
       {
         path: "",
@@ -31,5 +36,9 @@ export const router = createBrowserRouter([
         element: <Board />,
       },
     ],
+  },
+  {
+    path: "*",
+    element: <Navigate to="/dashboard" />,
   },
 ]);

@@ -1,8 +1,19 @@
 import { Link } from "react-router-dom";
 import Navbar from "../../Components/Navbar/Navbar";
 import { FaAngleDoubleRight } from "react-icons/fa";
+import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 
 const DashboardPage = () => {
+  const { isLoading } = useAuth0();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <span className="loading loading-spinner text-primary"></span>
+      </div>
+    );
+  }
+
   return (
     <>
       <Navbar />
@@ -44,4 +55,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default withAuthenticationRequired(DashboardPage);

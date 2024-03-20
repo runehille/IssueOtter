@@ -2,8 +2,23 @@ import { Link, Outlet } from "react-router-dom";
 import Navbar from "../../Components/Navbar/Navbar";
 import { FaAngleDoubleRight } from "react-icons/fa";
 import Breadcrumbs from "../../Components/Breadcrumbs/Breadcrumbs";
+import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
+
+type Props = {
+  key: string;
+};
 
 const ProjectPage = () => {
+  const { isLoading } = useAuth0();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <span className="loading loading-spinner text-primary"></span>
+      </div>
+    );
+  }
+
   return (
     <>
       <Navbar />
@@ -44,4 +59,4 @@ const ProjectPage = () => {
   );
 };
 
-export default ProjectPage;
+export default withAuthenticationRequired(ProjectPage);

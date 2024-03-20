@@ -1,13 +1,21 @@
 import { useEffect, useState } from "react";
 import IssuesListSkeleton from "./IssuesListSkeleton";
+import { getAllIssues } from "../../Api";
+import { IssueGet } from "../../Models/Issue";
 
 const IssuesList = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [issues, setIssues] = useState<IssueGet[]>([]);
 
   useEffect(() => {
-    setInterval(() => {
-      setIsLoading(false);
-    }, 1000);
+    const fetchIssues = async () => {
+      const result = await getAllIssues();
+      if (result) {
+        setIssues(result.data);
+        setIsLoading(false);
+      }
+    };
+    fetchIssues();
   }, []);
 
   return (
@@ -20,34 +28,21 @@ const IssuesList = () => {
             {/* head */}
             <thead>
               <tr>
-                <th></th>
+                <th>Key</th>
                 <th>Title</th>
-                <th>Status</th>
                 <th>Assignee</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
-              {/* row 1 */}
-              <tr className="hover">
-                <th>1</th>
-                <td>Fix bug in backend</td>
-                <td>In Progress</td>
-                <td>Cy Ganderton</td>
-              </tr>
-              {/* row 2 */}
-              <tr className="hover">
-                <th>2</th>
-                <td>Review code</td>
-                <td>To Do</td>
-                <td>Hart Hagerty</td>
-              </tr>
-              {/* row 3 */}
-              <tr className="hover">
-                <th>3</th>
-                <td>Change layout on Dashboard</td>
-                <td>In Progress</td>
-                <td>Brice Swyre</td>
-              </tr>
+              {issues.map((issue) => (
+                <tr key={issue.id} className="hover">
+                  <td>{issue.key}</td>
+                  <td>{issue.title}</td>
+                  <td>{issue.assignee}</td>
+                  <td>{issue.status}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

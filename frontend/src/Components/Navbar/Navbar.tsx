@@ -1,8 +1,15 @@
 import { Link, useLocation } from "react-router-dom";
 import CreateIssueModal from "../CreateIssueModal/CreateIssueModal";
 import { useEffect, useState } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
+import { FaBell } from "react-icons/fa6";
+import { getAllProjects } from "../../Api";
+import { ProjectGet } from "../../Models/Project";
 
 const Navbar = () => {
+  const { logout, user, isLoading } = useAuth0();
+  const [projects, setProjects] = useState<ProjectGet[]>([]);
+  const [isFetchingProjects, setIsFetchingProjects] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(
     JSON.parse(localStorage.getItem("isDarkMode") as string)
   );
@@ -11,7 +18,23 @@ const Navbar = () => {
 
   useEffect(() => {
     localStorage.setItem("isDarkMode", JSON.stringify(isDarkMode));
+    const fetchProjects = async () => {
+      const result = await getAllProjects();
+      if (result) {
+        setProjects(result.data);
+        setIsFetchingProjects(false);
+      }
+    };
+    fetchProjects();
   }, [isDarkMode]);
+
+  if (isLoading || isFetchingProjects) {
+    return (
+      <div className="m-auto">
+        <span className="loading loading-spinner text-primary"></span>;
+      </div>
+    );
+  }
 
   return (
     <div className="navbar bg-base-100 shadow">
@@ -27,7 +50,6 @@ const Navbar = () => {
           />
           <p className="text-lg hidden md:flex">IssueOtter</p>
         </Link>
-
         <div
           className={`dropdown ${
             paths.includes("project") ? "border-b-2 border-b-base-content" : ""
@@ -40,16 +62,20 @@ const Navbar = () => {
             tabIndex={0}
             className="dropdown-content z-[1] menu p-2 mt-1 shadow bg-base-100 rounded-box w-52"
           >
-            <li>
-              <Link to="/project">Demo Project</Link>
-            </li>
+            {projects.map((project) => (
+              <li key={project.key}>
+                <Link to={`/project/${project.key}`}>
+                  {project.title} ({project.key})
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
-        <CreateIssueModal />
+        <CreateIssueModal projects={projects} />
       </div>
 
-      {/* Light/Dark Mode, Searchbar, Avatar */}
       <div className="flex-none gap-2">
+        {/* Light/Dark Mode */}
         <label className="swap swap-rotate">
           <input
             type="checkbox"
@@ -73,6 +99,7 @@ const Navbar = () => {
             <path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z" />
           </svg>
         </label>
+        {/* Search */}
         <div className="form-control">
           <input
             type="text"
@@ -80,6 +107,12 @@ const Navbar = () => {
             className="input input-bordered w-24 md:w-auto"
           />
         </div>
+        <button className="btn btn-circle btn-ghost">
+          <div className="indicator">
+            <FaBell className="size-5" />
+            <span className="badge badge-xs badge-primary indicator-item"></span>
+          </div>
+        </button>
         <div className="dropdown dropdown-end">
           <div
             tabIndex={0}
@@ -87,13 +120,16 @@ const Navbar = () => {
             className="btn btn-ghost btn-circle avatar"
           >
             <div className="w-10 rounded-full">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Sea_Otter_%28Enhydra_lutris%29_%2825169790524%29_crop.jpg/263px-Sea_Otter_%28Enhydra_lutris%29_%2825169790524%29_crop.jpg" />
+              <img src={user?.picture} alt="" />
             </div>
           </div>
           <ul
             tabIndex={0}
             className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
           >
+            <li>
+              <a>{user?.email}</a>
+            </li>
             <li>
               <a className="justify-between">
                 Profile
@@ -104,7 +140,15 @@ const Navbar = () => {
               <a>Settings</a>
             </li>
             <li>
-              <a>Logout</a>
+              <a
+                onClick={() =>
+                  logout({
+                    logoutParams: { returnTo: "http://localhost:5173" },
+                  })
+                }
+              >
+                Logout
+              </a>
             </li>
           </ul>
         </div>

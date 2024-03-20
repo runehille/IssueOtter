@@ -1,6 +1,11 @@
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
+import { ProjectGet } from "../../Models/Project";
+
+type Props = {
+  projects: ProjectGet[];
+};
 
 type CreateFormsInputs = {
   project: string;
@@ -14,13 +19,15 @@ const validation = Yup.object().shape({
   description: Yup.string(),
 });
 
-const CreateIssueModal = () => {
+const CreateIssueModal = ({ projects }: Props) => {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<CreateFormsInputs>({ resolver: yupResolver(validation) });
+  } = useForm<CreateFormsInputs>({
+    resolver: yupResolver(validation) as never,
+  });
 
   const handleFormSubmit = (form: CreateFormsInputs) => {
     (document.getElementById("my_modal_1") as HTMLDialogElement)!.close();
@@ -69,8 +76,11 @@ const CreateIssueModal = () => {
                     <option disabled value="default">
                       Choose project
                     </option>
-                    <option value="frontend">Frontend</option>
-                    <option value="backend">Backend</option>
+                    {projects.map((project) => (
+                      <option key={project.key} value={project.title}>
+                        {project.title}
+                      </option>
+                    ))}
                   </select>
                   {errors.project ? (
                     <p className="text-red-600">{errors.project.message}</p>

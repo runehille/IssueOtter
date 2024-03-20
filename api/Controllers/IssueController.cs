@@ -1,11 +1,14 @@
 using api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using api.Mappers;
+using api.Dtos.Issue;
+using Microsoft.AspNetCore.Authorization;
 
 namespace api.Controllers;
 
 [ApiController]
-[Route("api/issues")]
+[Route("api/issue")]
+[Authorize]
 public class IssueController : ControllerBase
 {
     private readonly IIssueRepository _issueRepository;
@@ -23,5 +26,11 @@ public class IssueController : ControllerBase
         var issuesResponse = issues.Select(x => x.MapIssueModelToIssueResponse());
 
         return Ok(issuesResponse);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateIssueRequest createIssueRequest)
+    {
+        return Created();
     }
 }

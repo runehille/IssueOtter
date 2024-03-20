@@ -12,8 +12,19 @@ public static class IssueMapper
             Id = issueModel.Id,
             Title = issueModel.Title,
             Content = issueModel.Content,
-            Created = issueModel.Created,
-            LastUpdated = issueModel.LastUpdated
+            CreatedOn = issueModel.CreatedOn,
+            LastUpdatedOn = issueModel.LastUpdatedOn,
+        };
+    }
+
+    public static Issue MapCreateIssueRequestToIssueModel(this CreateIssueRequest createIssueRequest)
+    {
+        return new Issue
+        {
+            Title = createIssueRequest.Title,
+            Content = createIssueRequest.Content,
+            CreatedById = createIssueRequest.CreatedById,
+            ProjectId = createIssueRequest.ProjectId
         };
     }
 }

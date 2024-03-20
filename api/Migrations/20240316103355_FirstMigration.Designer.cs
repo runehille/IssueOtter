@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Data;
 
@@ -11,9 +12,11 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240316103355_FirstMigration")]
+    partial class FirstMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,9 +42,6 @@ namespace api.Migrations
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsOnBoard")
                         .HasColumnType("tinyint(1)");
@@ -78,9 +78,6 @@ namespace api.Migrations
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("LastUpdatedById")
                         .HasColumnType("int");
@@ -127,9 +124,6 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -165,7 +159,7 @@ namespace api.Migrations
                         .IsRequired();
 
                     b.HasOne("api.Models.Issue", null)
-                        .WithMany("Comments")
+                        .WithMany("MyProperty")
                         .HasForeignKey("IssueId");
 
                     b.Navigation("CreatedBy");
@@ -217,7 +211,7 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Issue", b =>
                 {
-                    b.Navigation("Comments");
+                    b.Navigation("MyProperty");
                 });
 #pragma warning restore 612, 618
         }

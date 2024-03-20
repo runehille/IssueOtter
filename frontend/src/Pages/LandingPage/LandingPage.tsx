@@ -1,17 +1,24 @@
-import { Link } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const LandingPage = () => {
+  const { loginWithRedirect } = useAuth0();
+
   return (
     <>
-      <div className="bg-gradient-to-r from-base-300 to-60%">
+      <div className="bg-gradient-to-t from-base-200 to-80%">
         <div className="sm:mx-32 lg:mx-48 sticky top-0 bg-transparent">
           <div className="navbar justify-between">
             <p className="font-bold text-3xl">IssueOtter</p>
             <div className="flex space-x-8">
-              <button className="btn btn-info">Signup</button>
-              <Link to="/dashboard" className="btn btn-primary">
+              <a
+                className="btn btn-primary"
+                onClick={() => loginWithRedirect({})}
+              >
+                Signup
+              </a>
+              <a className="btn" onClick={() => loginWithRedirect()}>
                 Login
-              </Link>
+              </a>
             </div>
           </div>
         </div>
@@ -24,10 +31,12 @@ const LandingPage = () => {
                 The best way <br /> to manage <br /> your projects.
               </h1>
               <p className="py-6 tracking-wide">
-                IssueOtter lets you keep track of issues, <br /> manage projects
-                and much more! <br /> Click the button to get started.
+                <b>IssueOtter</b> lets you keep track of issues, <br /> manage
+                projects and much more! <br /> Click the button to get started.
               </p>
-              <button className="btn btn-info">Get Started</button>
+              <a className="btn btn-info" onClick={() => loginWithRedirect()}>
+                Get Started
+              </a>
             </div>
           </div>
         </div>
