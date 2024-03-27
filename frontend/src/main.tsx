@@ -7,6 +7,7 @@ import { Auth0Provider } from "@auth0/auth0-react";
 
 const authDomain = import.meta.env.VITE_REACT_APP_AUTH0_DOMAIN;
 const authClientId = import.meta.env.VITE_REACT_APP_AUTH0_CLIENT_ID;
+const authAudience = import.meta.env.VITE_REACT_APP_AUTH0_AUDIENCE;
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -14,6 +15,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       domain={authDomain}
       clientId={authClientId}
       authorizationParams={{
+        audience: authAudience,
         redirect_uri: "http://localhost:5173/dashboard",
       }}
     >

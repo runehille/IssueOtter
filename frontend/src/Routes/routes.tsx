@@ -7,7 +7,7 @@ import LandingPage from "../Pages/LandingPage/LandingPage";
 
 const ProjectPageWrapper = () => {
   const { key } = useParams();
-  return <ProjectPage key={key} />;
+  return <ProjectPage projectKey={key ?? ""} />;
 };
 
 export const router = createBrowserRouter([

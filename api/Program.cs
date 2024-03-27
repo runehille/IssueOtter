@@ -10,13 +10,26 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("defaultPolicy",
+                      policy =>
+                      {
+                          policy
+                          .AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                      });
+});
+
+var domain = builder.Configuration["Auth0:Domain"];
+var audience = builder.Configuration["Auth0:Audience"];
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
     options.Authority = domain;
-    options.Audience = builder.Configuration["Auth0:Audience"];
+    options.Audience = audience;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         NameClaimType = ClaimTypes.NameIdentifier
@@ -29,7 +42,7 @@ builder.Services
       options.AddPolicy(
         "read:messages",
         policy => policy.Requirements.Add(
-          new HasScopeRequirement("read:messages", domain)
+          new HasScopeRequirement("read:messages", domain!)
         )
       );
   });
@@ -76,6 +89,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 builder.Services.AddScoped<IIssueRepository, IssueRepository>();
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
 var app = builder.Build();
 
@@ -88,6 +102,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("defaultPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();

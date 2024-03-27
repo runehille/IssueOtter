@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace api.Migrations
 {
     /// <inheritdoc />
-    public partial class FirstMigration : Migration
+    public partial class DbUpdate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,13 +34,16 @@ namespace api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Key = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     Title = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    AdminId = table.Column<int>(type: "int", nullable: true),
+                    AdminId = table.Column<int>(type: "int", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    CreatedById = table.Column<int>(type: "int", nullable: false)
+                    CreatedById = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -49,7 +52,8 @@ namespace api.Migrations
                         name: "FK_Project_User_AdminId",
                         column: x => x.AdminId,
                         principalTable: "User",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Project_User_CreatedById",
                         column: x => x.CreatedById,
@@ -65,15 +69,19 @@ namespace api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Key = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     Title = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Content = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    AssigneeId = table.Column<int>(type: "int", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     CreatedById = table.Column<int>(type: "int", nullable: false),
                     LastUpdatedOn = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     LastUpdatedById = table.Column<int>(type: "int", nullable: false),
-                    ProjectId = table.Column<int>(type: "int", nullable: false)
+                    ProjectId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -82,6 +90,12 @@ namespace api.Migrations
                         name: "FK_Issue_Project_ProjectId",
                         column: x => x.ProjectId,
                         principalTable: "Project",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Issue_User_AssigneeId",
+                        column: x => x.AssigneeId,
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -111,7 +125,8 @@ namespace api.Migrations
                     CreatedById = table.Column<int>(type: "int", nullable: false),
                     LastUpdatedOn = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     IsOnBoard = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    IssueId = table.Column<int>(type: "int", nullable: true)
+                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    IssueId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -120,7 +135,8 @@ namespace api.Migrations
                         name: "FK_Comment_Issue_IssueId",
                         column: x => x.IssueId,
                         principalTable: "Issue",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Comment_User_CreatedById",
                         column: x => x.CreatedById,
@@ -139,6 +155,11 @@ namespace api.Migrations
                 name: "IX_Comment_IssueId",
                 table: "Comment",
                 column: "IssueId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Issue_AssigneeId",
+                table: "Issue",
+                column: "AssigneeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Issue_CreatedById",

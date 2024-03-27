@@ -55,4 +55,6 @@ const DashboardPage = () => {
   );
 };
 
-export default withAuthenticationRequired(DashboardPage);
+const AuthenticatedDashboardPage = withAuthenticationRequired(DashboardPage);
+
+export default AuthenticatedDashboardPage;

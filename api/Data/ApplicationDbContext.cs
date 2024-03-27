@@ -10,5 +10,45 @@ public class ApplicationDbContext : DbContext
 
     }
 
-    public DbSet<Issue>? Issue { get; set; }
+    public DbSet<ProjectModel> Project { get; set; }
+    public DbSet<IssueModel> Issue { get; set; }
+    public DbSet<CommentModel> Comment { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        // Project
+        modelBuilder.Entity<ProjectModel>()
+        .HasMany(x => x.Issues)
+        .WithOne(p => p.Project)
+        .HasForeignKey(x => x.ProjectId);
+
+
+        // Issue
+        modelBuilder.Entity<IssueModel>()
+            .HasOne(x => x.CreatedBy)
+            .WithMany()
+            .HasForeignKey(x => x.CreatedById);
+
+        modelBuilder.Entity<IssueModel>()
+            .HasOne(x => x.LastUpdatedBy)
+            .WithMany()
+            .HasForeignKey(x => x.LastUpdatedById);
+
+        modelBuilder.Entity<IssueModel>()
+            .HasOne(x => x.Assignee)
+            .WithMany()
+            .HasForeignKey(x => x.AssigneeId);
+
+        modelBuilder.Entity<IssueModel>()
+            .HasOne(x => x.Project)
+            .WithMany(p => p.Issues)
+            .HasForeignKey(x => x.ProjectId);
+
+        modelBuilder.Entity<IssueModel>()
+            .HasMany(x => x.Comments)
+            .WithOne(p => p.Issue)
+            .HasForeignKey(x => x.IssueId);
+    }
 }

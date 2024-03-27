@@ -1,14 +1,20 @@
-using api.Models;
+
+
+using System.ComponentModel.DataAnnotations;
 
 namespace api.Dtos.Issue
 {
     public class CreateIssueRequest
     {
+        [Required]
         public string Title { get; set; } = string.Empty;
+        [Required]
         public string Content { get; set; } = string.Empty;
+        [Required]
+        public int AssigneeId { get; set; }
+        [Required]
         public int CreatedById { get; set; }
-        public User? CreatedBy { get; set; }
+        [Required]
         public int ProjectId { get; set; }
-        public Project? Project { get; set; }
     }
 }

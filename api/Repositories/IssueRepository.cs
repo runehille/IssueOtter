@@ -8,35 +8,48 @@ namespace api.Repositories;
 public class IssueRepository : IIssueRepository
 {
     private readonly ApplicationDbContext _context;
+    private readonly ILogger<IssueRepository> _logger;
 
-    public IssueRepository(ApplicationDbContext context)
+    public IssueRepository(ApplicationDbContext context, ILogger<IssueRepository> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
-    public Task<Issue?> CreateAsync(Issue issueModel)
+    public async Task<IssueModel?> CreateAsync(IssueModel issueModel)
+    {
+        try
+        {
+            await _context.Issue!.AddAsync(issueModel);
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException e)
+        {
+            _logger.LogError(e, "An error occurred while creating the issue in the database.");
+            throw;
+        }
+
+        return issueModel;
+    }
+
+    public Task<IssueModel?> DeleteAsync(int id)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Issue?> DeleteAsync(int id)
+    public async Task<List<IssueModel>> GetAllAsync()
     {
-        throw new NotImplementedException();
-    }
-
-    public async Task<List<Issue>> GetAllAsync()
-    {
-        var issues = await _context.Issue!.ToListAsync();
+        var issues = await _context.Issue.Include(i => i.Comments).ToListAsync();
 
         return issues;
     }
 
-    public Task<Issue?> GetByIdAsync(int id)
+    public Task<IssueModel?> GetByIdAsync(int id)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Issue?> UpdateAsync(int id, Issue issueModel)
+    public Task<IssueModel?> UpdateAsync(int id, IssueModel issueModel)
     {
         throw new NotImplementedException();
     }

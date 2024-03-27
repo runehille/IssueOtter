@@ -7,7 +7,7 @@ import { getAllProjects } from "../../Api";
 import { ProjectGet } from "../../Models/Project";
 
 const Navbar = () => {
-  const { logout, user, isLoading } = useAuth0();
+  const { logout, user, isLoading, getAccessTokenSilently } = useAuth0();
   const [projects, setProjects] = useState<ProjectGet[]>([]);
   const [isFetchingProjects, setIsFetchingProjects] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(
@@ -18,8 +18,10 @@ const Navbar = () => {
 
   useEffect(() => {
     localStorage.setItem("isDarkMode", JSON.stringify(isDarkMode));
+
     const fetchProjects = async () => {
-      const result = await getAllProjects();
+      const token = await getAccessTokenSilently();
+      const result = await getAllProjects(token);
       if (result) {
         setProjects(result.data);
         setIsFetchingProjects(false);
@@ -28,7 +30,7 @@ const Navbar = () => {
     fetchProjects();
   }, [isDarkMode]);
 
-  if (isLoading || isFetchingProjects) {
+  if (isLoading) {
     return (
       <div className="m-auto">
         <span className="loading loading-spinner text-primary"></span>;

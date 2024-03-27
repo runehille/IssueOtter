@@ -2,6 +2,8 @@ import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { ProjectGet } from "../../Models/Project";
+import { postIssue } from "../../Api";
+import { useAuth0 } from "@auth0/auth0-react";
 
 type Props = {
   projects: ProjectGet[];
@@ -10,7 +12,7 @@ type Props = {
 type CreateFormsInputs = {
   project: string;
   title: string;
-  description: string;
+  content: string;
 };
 
 const validation = Yup.object().shape({
@@ -20,6 +22,8 @@ const validation = Yup.object().shape({
 });
 
 const CreateIssueModal = ({ projects }: Props) => {
+  const { getAccessTokenSilently } = useAuth0();
+
   const {
     register,
     handleSubmit,
@@ -29,10 +33,15 @@ const CreateIssueModal = ({ projects }: Props) => {
     resolver: yupResolver(validation) as never,
   });
 
-  const handleFormSubmit = (form: CreateFormsInputs) => {
+  const handleFormSubmit = async (form: CreateFormsInputs) => {
     (document.getElementById("my_modal_1") as HTMLDialogElement)!.close();
+
+    const token = await getAccessTokenSilently();
+    await postIssue(token, {
+      title: form.title,
+      content: form.content,
+    });
     resetForm();
-    console.log(form.project, form.title, form.description);
   };
 
   const resetForm = () => {
@@ -104,7 +113,7 @@ const CreateIssueModal = ({ projects }: Props) => {
                 </div>
                 <div>
                   <textarea
-                    {...register("description")}
+                    {...register("content")}
                     id="description"
                     className="textarea textarea-bordered h-24 w-full"
                     placeholder="Description"

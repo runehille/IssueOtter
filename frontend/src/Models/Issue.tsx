@@ -1,5 +1,4 @@
 export type IssueGet = {
-  id: string;
   title: string;
   key: string;
   status: string;
@@ -7,4 +6,9 @@ export type IssueGet = {
   assignee: string;
   reporter: string;
   project: string;
+};
+
+export type IssuePost = {
+  title: string;
+  content: string;
 };

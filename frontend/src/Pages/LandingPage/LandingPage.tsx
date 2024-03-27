@@ -12,7 +12,11 @@ const LandingPage = () => {
             <div className="flex space-x-8">
               <a
                 className="btn btn-primary"
-                onClick={() => loginWithRedirect({})}
+                onClick={() =>
+                  loginWithRedirect({
+                    authorizationParams: { screen_hint: "signup" },
+                  })
+                }
               >
                 Signup
               </a>
@@ -34,7 +38,14 @@ const LandingPage = () => {
                 <b>IssueOtter</b> lets you keep track of issues, <br /> manage
                 projects and much more! <br /> Click the button to get started.
               </p>
-              <a className="btn btn-info" onClick={() => loginWithRedirect()}>
+              <a
+                className="btn btn-info"
+                onClick={() =>
+                  loginWithRedirect({
+                    authorizationParams: { screen_hint: "signup" },
+                  })
+                }
+              >
                 Get Started
               </a>
             </div>

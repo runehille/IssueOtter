@@ -12,8 +12,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240316103355_FirstMigration")]
-    partial class FirstMigration
+    [Migration("20240326194014_AddProjectIssueCount")]
+    partial class AddProjectIssueCount
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace api.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("api.Models.Comment", b =>
+            modelBuilder.Entity("api.Models.CommentModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -43,10 +43,13 @@ namespace api.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<bool>("IsOnBoard")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int?>("IssueId")
+                    b.Property<int>("IssueId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("LastUpdatedOn")
@@ -61,13 +64,16 @@ namespace api.Migrations
                     b.ToTable("Comment");
                 });
 
-            modelBuilder.Entity("api.Models.Issue", b =>
+            modelBuilder.Entity("api.Models.IssueModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AssigneeId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -79,6 +85,13 @@ namespace api.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<int>("LastUpdatedById")
                         .HasColumnType("int");
 
@@ -88,11 +101,16 @@ namespace api.Migrations
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Status")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AssigneeId");
 
                     b.HasIndex("CreatedById");
 
@@ -103,7 +121,7 @@ namespace api.Migrations
                     b.ToTable("Issue");
                 });
 
-            modelBuilder.Entity("api.Models.Project", b =>
+            modelBuilder.Entity("api.Models.ProjectModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -111,7 +129,7 @@ namespace api.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AdminId")
+                    b.Property<int>("AdminId")
                         .HasColumnType("int");
 
                     b.Property<int>("CreatedById")
@@ -121,6 +139,16 @@ namespace api.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("IssueCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Key")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -137,7 +165,7 @@ namespace api.Migrations
                     b.ToTable("Project");
                 });
 
-            modelBuilder.Entity("api.Models.User", b =>
+            modelBuilder.Entity("api.Models.UserModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -150,40 +178,52 @@ namespace api.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("api.Models.Comment", b =>
+            modelBuilder.Entity("api.Models.CommentModel", b =>
                 {
-                    b.HasOne("api.Models.User", "CreatedBy")
+                    b.HasOne("api.Models.UserModel", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("api.Models.Issue", null)
-                        .WithMany("MyProperty")
-                        .HasForeignKey("IssueId");
+                    b.HasOne("api.Models.IssueModel", "Issue")
+                        .WithMany("Comments")
+                        .HasForeignKey("IssueId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("CreatedBy");
+
+                    b.Navigation("Issue");
                 });
 
-            modelBuilder.Entity("api.Models.Issue", b =>
+            modelBuilder.Entity("api.Models.IssueModel", b =>
                 {
-                    b.HasOne("api.Models.User", "CreatedBy")
+                    b.HasOne("api.Models.UserModel", "Assignee")
+                        .WithMany()
+                        .HasForeignKey("AssigneeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("api.Models.UserModel", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("api.Models.User", "LastUpdatedBy")
+                    b.HasOne("api.Models.UserModel", "LastUpdatedBy")
                         .WithMany()
                         .HasForeignKey("LastUpdatedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("api.Models.Project", "Project")
-                        .WithMany()
+                    b.HasOne("api.Models.ProjectModel", "Project")
+                        .WithMany("Issues")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Assignee");
 
                     b.Navigation("CreatedBy");
 
@@ -192,13 +232,15 @@ namespace api.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("api.Models.Project", b =>
+            modelBuilder.Entity("api.Models.ProjectModel", b =>
                 {
-                    b.HasOne("api.Models.User", "Admin")
+                    b.HasOne("api.Models.UserModel", "Admin")
                         .WithMany()
-                        .HasForeignKey("AdminId");
+                        .HasForeignKey("AdminId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("api.Models.User", "CreatedBy")
+                    b.HasOne("api.Models.UserModel", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -209,9 +251,14 @@ namespace api.Migrations
                     b.Navigation("CreatedBy");
                 });
 
-            modelBuilder.Entity("api.Models.Issue", b =>
+            modelBuilder.Entity("api.Models.IssueModel", b =>
                 {
-                    b.Navigation("MyProperty");
+                    b.Navigation("Comments");
+                });
+
+            modelBuilder.Entity("api.Models.ProjectModel", b =>
+                {
+                    b.Navigation("Issues");
                 });
 #pragma warning restore 612, 618
         }

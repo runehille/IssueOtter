@@ -5,10 +5,10 @@ import Breadcrumbs from "../../Components/Breadcrumbs/Breadcrumbs";
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 
 type Props = {
-  key: string;
+  projectKey: string;
 };
 
-const ProjectPage = () => {
+const ProjectPage = ({ projectKey }: Props) => {
   const { isLoading } = useAuth0();
 
   if (isLoading) {
@@ -42,6 +42,14 @@ const ProjectPage = () => {
             ></label>
             <ul className="menu p-4 w-72 min-h-full bg-base-200">
               <li>
+                <div className="card w-96 bg-base-100 shadow-xl">
+                  <div className="card-body">
+                    <h2 className="card-title">{projectKey}</h2>
+                    <p>This is a test project {projectKey}</p>
+                  </div>
+                </div>
+              </li>
+              <li>
                 <Link to="issues" className="text-lg">
                   Issues
                 </Link>
@@ -59,4 +67,6 @@ const ProjectPage = () => {
   );
 };
 
-export default withAuthenticationRequired(ProjectPage);
+const AuthenticatedProjectPage = withAuthenticationRequired(ProjectPage);
+
+export default AuthenticatedProjectPage;

@@ -1,13 +1,16 @@
-using api.Dtos.Comment;
-using api.Models;
 
-namespace api.Dtos.Issue;
+using System.ComponentModel.DataAnnotations.Schema;
 
-public class IssueResponse
+namespace api.Models;
+
+[Table("Issue")]
+public class IssueModel
 {
+    public int Id { get; set; }
     public string Key { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
+    public string? Status { get; set; }
     public int AssigneeId { get; set; }
     public UserModel? Assignee { get; set; }
     public DateTime CreatedOn { get; set; } = DateTime.Now;
@@ -17,6 +20,7 @@ public class IssueResponse
     public int LastUpdatedById { get; set; }
     public UserModel? LastUpdatedBy { get; set; }
     public int ProjectId { get; set; }
-    public List<CommentResponse> Comments { get; set; } = [];
+    public ProjectModel? Project { get; set; }
+    public List<CommentModel> Comments { get; set; } = [];
     public bool IsDeleted { get; set; }
 }

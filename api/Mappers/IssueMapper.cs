@@ -5,25 +5,31 @@ namespace api.Mappers;
 
 public static class IssueMapper
 {
-    public static IssueResponse MapIssueModelToIssueResponse(this Issue issueModel)
+    public static IssueResponse MapIssueModelToIssueResponse(this IssueModel issueModel)
     {
         return new IssueResponse
         {
-            Id = issueModel.Id,
+            Key = issueModel.Key,
             Title = issueModel.Title,
             Content = issueModel.Content,
+            AssigneeId = issueModel.AssigneeId,
             CreatedOn = issueModel.CreatedOn,
+            CreatedById = issueModel.CreatedById,
             LastUpdatedOn = issueModel.LastUpdatedOn,
+            LastUpdatedById = issueModel.LastUpdatedById,
+            Comments = issueModel.Comments.Select(x => x.MapCommentModelToCommentResponse()).ToList()
         };
     }
 
-    public static Issue MapCreateIssueRequestToIssueModel(this CreateIssueRequest createIssueRequest)
+    public static IssueModel MapCreateIssueRequestToIssueModel(this CreateIssueRequest createIssueRequest)
     {
-        return new Issue
+        return new IssueModel
         {
             Title = createIssueRequest.Title,
             Content = createIssueRequest.Content,
+            AssigneeId = createIssueRequest.AssigneeId,
             CreatedById = createIssueRequest.CreatedById,
+            LastUpdatedById = createIssueRequest.CreatedById,
             ProjectId = createIssueRequest.ProjectId
         };
     }
