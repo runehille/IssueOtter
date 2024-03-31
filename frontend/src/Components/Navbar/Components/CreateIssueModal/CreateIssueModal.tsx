@@ -1,8 +1,8 @@
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import { ProjectGet } from "../../Models/Project";
-import { postIssue } from "../../Api";
+import { ProjectGet } from "../../../../Models/Project";
+import { postIssue } from "../../../../Api/IssueApi";
 import { useAuth0 } from "@auth0/auth0-react";
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 };
 
 type CreateFormsInputs = {
-  project: string;
+  projectKey: string;
   title: string;
   content: string;
 };
@@ -34,12 +34,15 @@ const CreateIssueModal = ({ projects }: Props) => {
   });
 
   const handleFormSubmit = async (form: CreateFormsInputs) => {
-    (document.getElementById("my_modal_1") as HTMLDialogElement)!.close();
+    (document.getElementById(
+      "create_issue_modal"
+    ) as HTMLDialogElement)!.close();
 
     const token = await getAccessTokenSilently();
     await postIssue(token, {
       title: form.title,
       content: form.content,
+      projectKey: form.projectKey,
     });
     resetForm();
   };
@@ -53,13 +56,13 @@ const CreateIssueModal = ({ projects }: Props) => {
         className="btn btn-accent"
         onClick={() =>
           (document.getElementById(
-            "my_modal_1"
+            "create_issue_modal"
           ) as HTMLDialogElement)!.showModal()
         }
       >
         Create <br /> Issue
       </button>
-      <dialog id="my_modal_1" className="modal">
+      <dialog id="create_issue_modal" className="modal">
         <div className="modal-box">
           <form method="dialog">
             <button
@@ -78,7 +81,7 @@ const CreateIssueModal = ({ projects }: Props) => {
               >
                 <div>
                   <select
-                    {...register("project")}
+                    {...register("projectKey")}
                     className="select select-bordered w-full max-w-xs"
                     defaultValue="default"
                   >
@@ -86,13 +89,13 @@ const CreateIssueModal = ({ projects }: Props) => {
                       Choose project
                     </option>
                     {projects.map((project) => (
-                      <option key={project.key} value={project.title}>
+                      <option key={project.key} value={project.key}>
                         {project.title}
                       </option>
                     ))}
                   </select>
-                  {errors.project ? (
-                    <p className="text-red-600">{errors.project.message}</p>
+                  {errors.projectKey ? (
+                    <p className="text-red-600">{errors.projectKey.message}</p>
                   ) : (
                     ""
                   )}

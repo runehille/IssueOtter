@@ -17,6 +17,7 @@ public class ProjectRepository : IProjectRepository
     public async Task<ProjectModel> CreateAsync(ProjectModel projectModel)
     {
         await _context.Project.AddAsync(projectModel);
+        await _context.SaveChangesAsync();
 
         return projectModel;
     }

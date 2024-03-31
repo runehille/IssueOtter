@@ -1,24 +1,45 @@
 import { Link, useLocation } from "react-router-dom";
-import CreateIssueModal from "../CreateIssueModal/CreateIssueModal";
-import { useEffect, useState } from "react";
+import CreateIssueModal from "./Components/CreateIssueModal/CreateIssueModal";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { FaBell } from "react-icons/fa6";
-import { getAllProjects } from "../../Api";
+import { getAllProjects } from "../../Api/ProjectApi";
+import { postUser } from "../../Api/UserApi";
 import { ProjectGet } from "../../Models/Project";
+import { UserPost } from "../../Models/User";
 
 const Navbar = () => {
-  const { logout, user, isLoading, getAccessTokenSilently } = useAuth0();
+  const location = useLocation();
+  const paths = location.pathname.split("/").filter((path) => path !== "");
+  const { logout, user, getAccessTokenSilently } = useAuth0();
   const [projects, setProjects] = useState<ProjectGet[]>([]);
   const [isFetchingProjects, setIsFetchingProjects] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(
     JSON.parse(localStorage.getItem("isDarkMode") as string)
   );
-  const location = useLocation();
-  const paths = location.pathname.split("/").filter((path) => path !== "");
+
+  useLayoutEffect(() => {
+    localStorage.setItem("isDarkMode", JSON.stringify(isDarkMode));
+  }, [isDarkMode]);
 
   useEffect(() => {
-    localStorage.setItem("isDarkMode", JSON.stringify(isDarkMode));
+    const syncUserData = async () => {
+      if (!user) {
+        return;
+      }
+      const token = await getAccessTokenSilently();
 
+      const userToPost: UserPost = {
+        email: user?.email || "",
+        firstname: user?.email || "",
+        lastname: user?.email || "",
+      };
+      await postUser(token, userToPost);
+    };
+    syncUserData();
+  }, [user]);
+
+  useEffect(() => {
     const fetchProjects = async () => {
       const token = await getAccessTokenSilently();
       const result = await getAllProjects(token);
@@ -28,21 +49,13 @@ const Navbar = () => {
       }
     };
     fetchProjects();
-  }, [isDarkMode]);
-
-  if (isLoading) {
-    return (
-      <div className="m-auto">
-        <span className="loading loading-spinner text-primary"></span>;
-      </div>
-    );
-  }
+  }, []);
 
   return (
     <div className="navbar bg-base-100 shadow">
       <div className="flex-1 md:space-x-5">
         <Link
-          to="/dashboard"
+          to="/app/dashboard"
           className="btn btn-ghost md:mb-2 hover:bg-transparent"
         >
           <img
@@ -66,7 +79,7 @@ const Navbar = () => {
           >
             {projects.map((project) => (
               <li key={project.key}>
-                <Link to={`/project/${project.key}`}>
+                <Link to={`/app/project/${project.key}`}>
                   {project.title} ({project.key})
                 </Link>
               </li>

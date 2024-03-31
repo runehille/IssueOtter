@@ -4,3 +4,9 @@ export type ProjectGet = {
   title: string;
   description: string;
 };
+
+export type ProjectPost = {
+  key: string;
+  title: string;
+  description: string;
+};

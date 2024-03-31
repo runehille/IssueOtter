@@ -20,7 +20,12 @@ const LandingPage = () => {
               >
                 Signup
               </a>
-              <a className="btn" onClick={() => loginWithRedirect()}>
+              <a
+                className="btn"
+                onClick={() => {
+                  loginWithRedirect();
+                }}
+              >
                 Login
               </a>
             </div>

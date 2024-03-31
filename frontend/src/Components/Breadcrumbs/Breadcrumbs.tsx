@@ -2,13 +2,15 @@ import { useLocation } from "react-router";
 
 const Breadcrumbs = () => {
   const location = useLocation();
-  const paths = location.pathname.split("/").filter((path) => path !== "");
+  const paths = location.pathname
+    .split("/")
+    .filter((path) => path !== "app" || "");
 
   return (
     <div className="text-sm breadcrumbs">
       <ul>
-        {paths.map((path, index) => (
-          <li key={index}>{path}</li>
+        {paths.map((filteredPaths, index) => (
+          <li key={index}>{filteredPaths}</li>
         ))}
       </ul>
     </div>

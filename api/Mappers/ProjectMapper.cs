@@ -14,4 +14,14 @@ public static class ProjectMapper
             Description = projectModel.Description,
         };
     }
+
+    public static ProjectModel MapCreateProjectRequestToProjectModel(this CreateProjectRequest createProjectRequest)
+    {
+        return new ProjectModel
+        {
+            Key = createProjectRequest.Key,
+            Title = createProjectRequest.Title,
+            Description = createProjectRequest.Description,
+        };
+    }
 }

@@ -1,10 +1,13 @@
 import { Navigate, createBrowserRouter, useParams } from "react-router-dom";
 import ProjectPage from "../Pages/ProjectPage/ProjectPage";
 import DashboardPage from "../Pages/DashboardPage/DashboardPage";
-import IssuesList from "../Components/IssuesList/IssuesList";
-import Board from "../Components/Board/Board";
+import IssuesList from "../Pages/ProjectPage/Components/IssuesList/IssuesList";
+import Board from "../Pages/ProjectPage/Components/Board/Board";
 import LandingPage from "../Pages/LandingPage/LandingPage";
+import App from "../App";
+import CreateProject from "../Pages/DashboardPage/Components/CreateProject/CreateProject";
 
+// eslint-disable-next-line react-refresh/only-export-components
 const ProjectPageWrapper = () => {
   const { key } = useParams();
   return <ProjectPage projectKey={key ?? ""} />;
@@ -16,29 +19,40 @@ export const router = createBrowserRouter([
     element: <LandingPage />,
   },
   {
-    path: "dashboard",
-    element: <DashboardPage />,
-  },
-  {
-    path: "project/:key",
-    element: <ProjectPageWrapper />,
+    path: "app",
+    element: <App />,
     children: [
       {
-        path: "",
-        element: <Navigate to="issues" />,
+        path: "dashboard",
+        element: <DashboardPage />,
+        children: [
+          { path: "create-project", element: <CreateProject /> },
+          {},
+          {},
+        ],
       },
       {
-        path: "issues",
-        element: <IssuesList />,
-      },
-      {
-        path: "board",
-        element: <Board />,
+        path: "project/:key",
+        element: <ProjectPageWrapper />,
+        children: [
+          {
+            path: "",
+            element: <Navigate to="issues" />,
+          },
+          {
+            path: "issues",
+            element: <IssuesList />,
+          },
+          {
+            path: "board",
+            element: <Board />,
+          },
+        ],
       },
     ],
   },
   {
     path: "*",
-    element: <Navigate to="/dashboard" />,
+    element: <Navigate to="app/dashboard" />,
   },
 ]);

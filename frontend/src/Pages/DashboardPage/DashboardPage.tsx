@@ -1,22 +1,10 @@
-import { Link } from "react-router-dom";
-import Navbar from "../../Components/Navbar/Navbar";
 import { FaAngleDoubleRight } from "react-icons/fa";
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
+import { Link, Outlet } from "react-router-dom";
 
 const DashboardPage = () => {
-  const { isLoading } = useAuth0();
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <span className="loading loading-spinner text-primary"></span>
-      </div>
-    );
-  }
-
   return (
     <>
-      <Navbar />
       <div className="container flex">
         <label htmlFor="my-drawer-2" className="btn btn-sm md:hidden ">
           <FaAngleDoubleRight />
@@ -24,6 +12,7 @@ const DashboardPage = () => {
         <div className="drawer md:drawer-open">
           <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
           <div className="drawer-content flex items-start justify-start sm:pl-32 sm:pt-12">
+            <Outlet />
             <div className="hero min-h-screen bg-base">
               <div className="hero-content text-center">
                 <div className="max-w-md">
@@ -43,8 +32,8 @@ const DashboardPage = () => {
             ></label>
             <ul className="menu p-4 w-72 min-h-full text-base-content bg-base-200">
               <li>
-                <Link to="#" className="text-lg">
-                  Create New Project
+                <Link to="create-project" className="text-lg">
+                  Create new Project
                 </Link>
               </li>
             </ul>
