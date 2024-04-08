@@ -47,14 +47,18 @@ builder.Services
     );
   });
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(opt =>
+builder.Services.AddSwaggerGen(options =>
 {
-  opt.SwaggerDoc("v1", new OpenApiInfo { Title = "IssueOtterAPI", Version = "v1" });
-  opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+  options.SwaggerDoc("v1", new OpenApiInfo
+  {
+    Title = "IssueOtterAPI",
+    Version = "v1",
+    Description = "API for IssueOtter"
+  });
+
+  options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
   {
     In = ParameterLocation.Header,
     Name = "Authorization",
@@ -62,7 +66,7 @@ builder.Services.AddSwaggerGen(opt =>
     Scheme = "bearer"
   });
 
-  opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+  options.AddSecurityRequirement(new OpenApiSecurityRequirement
   {
         {
             new OpenApiSecurityScheme
@@ -93,7 +97,6 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
   app.UseSwagger();

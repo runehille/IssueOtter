@@ -4,7 +4,6 @@ using api.Mappers;
 using api.Dtos.Issue;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using api.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers;
@@ -35,7 +34,36 @@ public class IssueController : ControllerBase
     return Ok(issuesResponse);
   }
 
-  [HttpGet("{projectId:int}")]
+  [HttpGet("{id:int}")]
+  public async Task<IActionResult> GetById([FromRoute] int id)
+  {
+    var issue = await _issueRepository.GetByIdAsync(id);
+
+    if (issue is null)
+    {
+      return BadRequest("Issue not found");
+    }
+
+    return Ok(issue);
+  }
+
+  [HttpGet("{key}")]
+  public async Task<IActionResult> GetByKey([FromRoute] string key)
+  {
+    var issue = await _issueRepository.GetByKeyAsync(key);
+
+    if (issue is null)
+    {
+      return BadRequest("Issue not found");
+    }
+
+    var issueResponse = issue.MapIssueModelToIssueResponse();
+
+    return Ok(issueResponse);
+  }
+
+
+  [HttpGet("project/{projectId:int}")]
   public async Task<IActionResult> GetAllByProjectId([FromRoute] int projectId)
   {
     var issues = await _issueRepository.GetAllByProjectIdAsync(projectId);
@@ -46,7 +74,7 @@ public class IssueController : ControllerBase
   }
 
 
-  [HttpGet("{projectKey:alpha}")]
+  [HttpGet("project/{projectKey}")]
   public async Task<IActionResult> GetAllByProjectKey([FromRoute] string projectKey)
   {
     var issues = await _issueRepository.GetAllByProjectKeyAsync(projectKey);
@@ -104,5 +132,18 @@ public class IssueController : ControllerBase
     }
 
     return Created();
+  }
+
+  [HttpDelete("{id:int}")]
+  public async Task<IActionResult> Delete([FromRoute] int id)
+  {
+    var issueToDelete = await _issueRepository.DeleteAsync(id);
+
+    if (issueToDelete is null)
+    {
+      return NotFound($"Issue with id {id} not found");
+    }
+
+    return NoContent();
   }
 }

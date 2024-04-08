@@ -3,6 +3,8 @@ import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import { Link, Outlet } from "react-router-dom";
 
 const DashboardPage = () => {
+  const paths = location.pathname.split("/").filter((path) => path !== "");
+
   return (
     <>
       <div className="container flex">
@@ -11,20 +13,10 @@ const DashboardPage = () => {
         </label>
         <div className="drawer md:drawer-open">
           <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-          <div className="drawer-content flex items-start justify-start sm:pl-32 sm:pt-12">
+          <div className="drawer-content flex items-center justify-center sm:pl-32 sm:pt-12">
             <Outlet />
-            <div className="hero min-h-screen bg-base">
-              <div className="hero-content text-center">
-                <div className="max-w-md">
-                  <h1 className="text-5xl font-bold">Get started</h1>
-                  <p className="py-6">
-                    Create a new project or choose an existing one.
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
-          <div className="drawer-side rounded-e-xl border-x-2">
+          <div className="drawer-side">
             <label
               htmlFor="my-drawer-2"
               aria-label="close sidebar"
@@ -32,9 +24,19 @@ const DashboardPage = () => {
             ></label>
             <ul className="menu p-4 w-72 min-h-full text-base-content bg-base-200">
               <li>
-                <Link to="create-project" className="text-lg">
+                <Link
+                  to="create-project"
+                  className={`text-lg ${
+                    paths.includes("create-project")
+                      ? "border-l-2 border-l-base-content bg-base-300"
+                      : ""
+                  }`}
+                >
                   Create new Project
                 </Link>
+              </li>
+              <li>
+                <Link to="#">Settings</Link>
               </li>
             </ul>
           </div>

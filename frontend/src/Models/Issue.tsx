@@ -3,10 +3,16 @@ export type IssueGet = {
   key: string;
   status: string;
   content: string;
-  assignee: string;
+  assignee: {
+    email: string;
+    firstName: string;
+    lastName: string;
+  };
   assigneeId: number;
   reporter: string;
   project: string;
+  createdOn: string;
+  lastUpdatedOn: string;
 };
 
 export type IssuePost = {

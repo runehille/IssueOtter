@@ -16,7 +16,9 @@ type CreateFormsInputs = {
 };
 
 const validation = Yup.object().shape({
-  project: Yup.string().notOneOf(["default"], "Project is required"),
+  projectKey: Yup.string()
+    .notOneOf(["default"], "Project is required")
+    .required("Project is required"),
   title: Yup.string().required("Title is required"),
   description: Yup.string(),
 });
@@ -62,7 +64,7 @@ const CreateIssueModal = ({ projects }: Props) => {
       >
         Create <br /> Issue
       </button>
-      <dialog id="create_issue_modal" className="modal">
+      <dialog id="create_issue_modal" className="modal px-20 md:px-0">
         <div className="modal-box">
           <form method="dialog">
             <button
@@ -72,8 +74,8 @@ const CreateIssueModal = ({ projects }: Props) => {
               X
             </button>
           </form>
-          <div className="w-full bg-base rounded-lg shadow ">
-            <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+          <div className="w-full">
+            <div className="p-6 space-y-4">
               <h1 className="text-xl font-bold ">Create new issue</h1>
               <form
                 className="space-y-4 md:space-y-6"

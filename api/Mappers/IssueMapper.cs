@@ -5,32 +5,32 @@ namespace api.Mappers;
 
 public static class IssueMapper
 {
-    public static IssueResponse MapIssueModelToIssueResponse(this IssueModel issueModel)
+  public static IssueResponse MapIssueModelToIssueResponse(this IssueModel issueModel)
+  {
+    return new IssueResponse
     {
-        return new IssueResponse
-        {
-            Key = issueModel.Key,
-            Title = issueModel.Title,
-            Content = issueModel.Content,
-            AssigneeId = issueModel.AssigneeId,
-            CreatedOn = issueModel.CreatedOn,
-            CreatedById = issueModel.CreatedById,
-            LastUpdatedOn = issueModel.LastUpdatedOn,
-            LastUpdatedById = issueModel.LastUpdatedById,
-            Comments = issueModel.Comments.Select(x => x.MapCommentModelToCommentResponse()).ToList()
-        };
-    }
+      Id = issueModel.Id,
+      Key = issueModel.Key,
+      Title = issueModel.Title,
+      Content = issueModel.Content,
+      Assignee = issueModel.Assignee?.MapUserModelToUserResponse(),
+      CreatedBy = issueModel.CreatedBy?.MapUserModelToUserResponse(),
+      CreatedOn = issueModel.CreatedOn.ToString("F"),
+      LastUpdatedOn = issueModel.LastUpdatedOn.ToString("F"),
+      Comments = issueModel.Comments.Select(x => x.MapCommentModelToCommentResponse()).ToList()
+    };
+  }
 
-    public static IssueModel MapCreateIssueRequestToIssueModel(this CreateIssueRequest createIssueRequest)
+  public static IssueModel MapCreateIssueRequestToIssueModel(this CreateIssueRequest createIssueRequest)
+  {
+    return new IssueModel
     {
-        return new IssueModel
-        {
-            Title = createIssueRequest.Title,
-            Content = createIssueRequest.Content,
-            AssigneeId = createIssueRequest.AssigneeId,
-            CreatedById = createIssueRequest.CreatedById,
-            LastUpdatedById = createIssueRequest.CreatedById,
-            ProjectId = createIssueRequest.ProjectId
-        };
-    }
+      Title = createIssueRequest.Title,
+      Content = createIssueRequest.Content,
+      AssigneeId = createIssueRequest.AssigneeId,
+      CreatedById = createIssueRequest.CreatedById,
+      LastUpdatedById = createIssueRequest.CreatedById,
+      ProjectId = createIssueRequest.ProjectId
+    };
+  }
 }

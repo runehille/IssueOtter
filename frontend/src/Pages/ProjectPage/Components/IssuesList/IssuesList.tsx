@@ -4,6 +4,7 @@ import { getAllIssues } from "../../../../Api/IssueApi";
 import { IssueGet } from "../../../../Models/Issue";
 import { useAuth0 } from "@auth0/auth0-react";
 import { ProjectContext } from "../../Context/Context";
+import { Link } from "react-router-dom";
 
 const IssuesList = () => {
   const projectKey = useContext(ProjectContext);
@@ -30,12 +31,10 @@ const IssuesList = () => {
       ) : (
         <div className="overflow-x-auto">
           <table className="table">
-            {/* head */}
             <thead>
               <tr>
                 <th>Key</th>
                 <th>Title</th>
-                <th>Content</th>
                 <th>Assignee</th>
                 <th>Status</th>
               </tr>
@@ -43,10 +42,13 @@ const IssuesList = () => {
             <tbody>
               {issues.map((issue) => (
                 <tr key={issue.key} className="hover">
-                  <td>{issue.key}</td>
-                  <td>{issue.title}</td>
-                  <td>{issue.content}</td>
-                  <td>{issue.assigneeId}</td>
+                  <td>
+                    <Link to={`${issue.key}`}>{issue.key}</Link>
+                  </td>
+                  <td>
+                    <Link to={`${issue.key}`}>{issue.title}</Link>
+                  </td>
+                  <td>{issue.assignee.firstName}</td>
                   <td>{issue.status}</td>
                 </tr>
               ))}
