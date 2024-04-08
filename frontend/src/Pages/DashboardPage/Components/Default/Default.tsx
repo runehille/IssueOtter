@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Default = () => {
   return (
     <div className="hero min-h-screen bg-base">
@@ -7,6 +9,9 @@ const Default = () => {
           <p className="py-6">
             Create a new project or choose an existing one.
           </p>
+          <Link to="create-project" className="text-lg btn btn-primary">
+            Create new Project
+          </Link>
         </div>
       </div>
     </div>

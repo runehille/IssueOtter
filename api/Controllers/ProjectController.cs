@@ -78,4 +78,17 @@ public class ProjectController : ControllerBase
 
     return Created();
   }
+
+  [HttpDelete("{key}")]
+  public async Task<IActionResult> DeleteByKey([FromRoute] string key)
+  {
+    var project = await _projectRepository.DeleteByKeyAsync(key);
+
+    if (project is null)
+    {
+      return NotFound("Project not found. Could not delete");
+    }
+
+    return NoContent();
+  }
 }

@@ -3,8 +3,6 @@ import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import { Link, Outlet } from "react-router-dom";
 
 const DashboardPage = () => {
-  const paths = location.pathname.split("/").filter((path) => path !== "");
-
   return (
     <>
       <div className="container flex">
@@ -22,23 +20,7 @@ const DashboardPage = () => {
               aria-label="close sidebar"
               className="drawer-overlay"
             ></label>
-            <ul className="menu p-4 w-72 min-h-full text-base-content bg-base-200">
-              <li>
-                <Link
-                  to="create-project"
-                  className={`text-lg ${
-                    paths.includes("create-project")
-                      ? "border-l-2 border-l-base-content bg-base-300"
-                      : ""
-                  }`}
-                >
-                  Create new Project
-                </Link>
-              </li>
-              <li>
-                <Link to="#">Settings</Link>
-              </li>
-            </ul>
+            <ul className="menu p-4 w-72 min-h-full text-base-content bg-base-200"></ul>
           </div>
         </div>
       </div>

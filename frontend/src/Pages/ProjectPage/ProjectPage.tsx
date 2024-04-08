@@ -3,12 +3,29 @@ import { FaAngleDoubleRight } from "react-icons/fa";
 import Breadcrumbs from "../../Components/Breadcrumbs/Breadcrumbs";
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import { ProjectContext } from "./Context/Context";
+import { useEffect, useState } from "react";
+import { getProjectByKey } from "../../Api/ProjectApi";
+import { ProjectGet } from "../../Models/Project";
 
 type Props = {
   projectKey: string;
 };
 
 const ProjectPage = ({ projectKey }: Props) => {
+  const { getAccessTokenSilently } = useAuth0();
+  const [project, setProject] = useState<ProjectGet | null>(null);
+
+  useEffect(() => {
+    const fetchProject = async () => {
+      const token = await getAccessTokenSilently();
+      const fetchedProject = await getProjectByKey(token, projectKey);
+      if (fetchedProject) {
+        setProject(fetchedProject.data);
+      }
+    };
+    fetchProject();
+  }, [projectKey]);
+
   return (
     <>
       <div className="container flex">
@@ -37,7 +54,7 @@ const ProjectPage = ({ projectKey }: Props) => {
                   <div className="card bg-base-100 shadow-xl">
                     <div className="card-body">
                       <h2 className="card-title">{projectKey}</h2>
-                      <p>This is a test project</p>
+                      <p>{project?.description}</p>
                     </div>
                   </div>
                 </li>

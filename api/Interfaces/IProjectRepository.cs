@@ -8,7 +8,7 @@ public interface IProjectRepository
   Task<ProjectModel> GetByIdAsync(int id);
   Task<ProjectModel> GetByKeyAsync(string key);
   Task<ProjectModel> CreateAsync(ProjectModel projectModel);
-  Task<ProjectModel> DeleteAsync(int id);
+  Task<ProjectModel?> DeleteByKeyAsync(string key);
   Task<ProjectModel?> UpdateIssueCountAsync(ProjectModel projectModel);
 
 }

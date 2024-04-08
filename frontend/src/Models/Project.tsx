@@ -1,5 +1,5 @@
 export type ProjectGet = {
-  id: string;
+  id: number;
   key: string;
   title: string;
   description: string;

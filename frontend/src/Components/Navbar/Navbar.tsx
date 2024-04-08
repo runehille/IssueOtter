@@ -9,6 +9,7 @@ import { ProjectGet } from "../../Models/Project";
 import { UserPost } from "../../Models/User";
 
 const Navbar = () => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const location = useLocation();
   const paths = location.pathname.split("/").filter((path) => path !== "");
   const { logout, user, getAccessTokenSilently } = useAuth0();
@@ -70,21 +71,31 @@ const Navbar = () => {
             paths.includes("project") ? "border-b-2 border-b-base-content" : ""
           }`}
         >
-          <div tabIndex={0} role="button" className="btn">
+          <div
+            tabIndex={0}
+            role="button"
+            className="btn"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+          >
             Projects
           </div>
-          <ul
-            tabIndex={0}
-            className="dropdown-content z-[1] menu p-2 mt-1 shadow bg-base-100 rounded-box w-52"
-          >
-            {projects.map((project) => (
-              <li key={project.key}>
-                <Link to={`/app/project/${project.key}`}>
-                  {project.title} ({project.key})
-                </Link>
-              </li>
-            ))}
-          </ul>
+          {dropdownOpen && (
+            <ul
+              tabIndex={0}
+              className="dropdown-content z-[1] menu p-2 mt-1 shadow bg-base-100 rounded-box w-52"
+            >
+              {projects.map((project) => (
+                <li key={project.key}>
+                  <Link
+                    to={`/app/project/${project.key}`}
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    {project.title} ({project.key})
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
         <CreateIssueModal projects={projects} />
       </div>

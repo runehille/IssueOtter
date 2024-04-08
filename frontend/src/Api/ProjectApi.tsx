@@ -62,3 +62,21 @@ export const postProject = async (
     }
   }
 };
+
+export const deleteProject = async (accessToken: string, key: string) => {
+  try {
+    const data = await BaseApiService.delete(`/project/${key}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(error.message);
+    } else {
+      console.log(error);
+      return "An unexpected error occurred. Please try again later.";
+    }
+  }
+};
