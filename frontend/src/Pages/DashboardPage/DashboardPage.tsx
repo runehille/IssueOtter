@@ -1,6 +1,6 @@
 import { FaAngleDoubleRight } from "react-icons/fa";
-import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
-import { Link, Outlet } from "react-router-dom";
+import { withAuthenticationRequired } from "@auth0/auth0-react";
+import { Outlet } from "react-router-dom";
 
 const DashboardPage = () => {
   return (

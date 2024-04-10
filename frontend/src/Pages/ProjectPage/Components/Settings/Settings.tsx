@@ -1,27 +1,18 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { deleteProject } from "../../../../Api/ProjectApi";
 import { ProjectContext } from "../../Context/Context";
 import { useAuth0 } from "@auth0/auth0-react";
-import { Navigate, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 const Settings = () => {
   const projectKey = useContext(ProjectContext);
   const { getAccessTokenSilently } = useAuth0();
-  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const navigate = useNavigate();
 
   const handleDelete = async () => {
     const token = await getAccessTokenSilently();
     await deleteProject(token, projectKey);
     navigate("/");
-  };
-
-  const showDeleteModal = async () => {
-    setShowConfirmDelete(true);
-  };
-
-  const closeDeleteModal = async () => {
-    setShowConfirmDelete(false);
   };
 
   return (

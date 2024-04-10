@@ -7,6 +7,7 @@ import { getAllProjects } from "../../Api/ProjectApi";
 import { postUser } from "../../Api/UserApi";
 import { ProjectGet } from "../../Models/Project";
 import { UserPost } from "../../Models/User";
+import { FaCaretDown } from "react-icons/fa6";
 
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -78,6 +79,7 @@ const Navbar = () => {
             onClick={() => setDropdownOpen(!dropdownOpen)}
           >
             Projects
+            <FaCaretDown />
           </div>
           {dropdownOpen && (
             <ul
