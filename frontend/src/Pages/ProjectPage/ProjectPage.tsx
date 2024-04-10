@@ -34,7 +34,7 @@ const ProjectPage = ({ projectKey }: Props) => {
         </label>
         <div className="drawer md:drawer-open">
           <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-          <div className="drawer-content flex sm:pl-32 sm:pt-12 border-w-2">
+          <div className="drawer-content flex pl-2 lg:pl-32 sm:pt-6 border-w-2">
             <div className="space-y-12">
               <Breadcrumbs />
               <ProjectContext.Provider value={projectKey}>
@@ -49,15 +49,13 @@ const ProjectPage = ({ projectKey }: Props) => {
               className="drawer-overlay"
             ></label>
             <ul className="menu p-4 w-72 min-h-full bg-base-200 justify-items-start">
-              <div>
-                <li>
-                  <div className="card bg-base-100 shadow-xl">
-                    <div className="card-body">
-                      <h2 className="card-title">{projectKey}</h2>
-                      <p>{project?.description}</p>
-                    </div>
-                  </div>
-                </li>
+              <div className="card bg-base-100 shadow-xl mb-10">
+                <div className="card-body">
+                  <h2 className="card-title">{project?.title}</h2>
+                  <p>{project?.description}</p>
+                </div>
+              </div>
+              <div className="mb-36">
                 <li>
                   <Link to="issues" className="text-lg">
                     Issues
@@ -69,6 +67,7 @@ const ProjectPage = ({ projectKey }: Props) => {
                   </Link>
                 </li>
               </div>
+              <hr />
               <div className="mt-20">
                 <ul>
                   <li>

@@ -155,17 +155,9 @@ const Navbar = () => {
             tabIndex={0}
             className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
           >
+            <p className="text-center">{user?.email}</p>
             <li>
-              <a>{user?.email}</a>
-            </li>
-            <li>
-              <a className="justify-between">
-                Profile
-                <span className="badge">New</span>
-              </a>
-            </li>
-            <li>
-              <a>Settings</a>
+              <a className="justify-between">Profile</a>
             </li>
             <li>
               <a

@@ -4,6 +4,7 @@ import { getIssueByKey } from "../../../../Api/IssueApi";
 import { useNavigate } from "react-router-dom";
 import IssueSkeleton from "./IssueSkeleton";
 import { IssueGet } from "../../../../Models/Issue";
+import { FaCaretLeft } from "react-icons/fa6";
 
 type Props = {
   issueKey: string;
@@ -34,7 +35,8 @@ const Issue = ({ issueKey }: Props) => {
         <IssueSkeleton />
       ) : (
         <>
-          <button className="btn" onClick={() => navigate(-1)}>
+          <button className="btn btn-sm btn-ghost" onClick={() => navigate(-1)}>
+            <FaCaretLeft />
             Back
           </button>
 
