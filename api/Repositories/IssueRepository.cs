@@ -46,6 +46,20 @@ public class IssueRepository : IIssueRepository
     return issue;
   }
 
+  public async Task<IssueModel?> DeleteByKeyAsync(string key)
+  {
+    var issue = await _context.Issue.FirstOrDefaultAsync(x => x.Key == key);
+    if (issue == null)
+    {
+      return null;
+    }
+
+    _context.Issue.Remove(issue);
+    await _context.SaveChangesAsync();
+
+    return issue;
+  }
+
   public async Task<List<IssueModel>> GetAllAsync()
   {
     var issues = await _context.Issue.ToListAsync();

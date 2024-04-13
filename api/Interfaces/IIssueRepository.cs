@@ -12,4 +12,5 @@ public interface IIssueRepository
   Task<IssueModel?> CreateAsync(IssueModel issueModel);
   Task<IssueModel?> UpdateAsync(int id, IssueModel issueModel);
   Task<IssueModel?> DeleteAsync(int id);
+  Task<IssueModel?> DeleteByKeyAsync(string key);
 }

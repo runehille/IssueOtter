@@ -65,3 +65,21 @@ export const postIssue = async (accessToken: string, issue: IssuePost) => {
     }
   }
 };
+
+export const deleteIssue = async (accessToken: string, issueKey: string) => {
+  try {
+    const data = await BaseApiService.delete<IssueGet>(`/issue/${issueKey}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(error.message);
+    } else {
+      console.log(error);
+      return "An unexpected error occurred. Please try again later.";
+    }
+  }
+};

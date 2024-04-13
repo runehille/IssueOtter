@@ -30,30 +30,39 @@ const IssuesList = () => {
         <IssuesListSkeleton />
       ) : (
         <div className="overflow-x-auto">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Key</th>
-                <th>Title</th>
-                <th>Assignee</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {issues.map((issue) => (
-                <tr key={issue.key} className="hover">
-                  <td>
-                    <Link to={`${issue.key}`}>{issue.key}</Link>
-                  </td>
-                  <td>
-                    <Link to={`${issue.key}`}>{issue.title}</Link>
-                  </td>
-                  <td>{issue.assignee.firstName}</td>
-                  <td>{issue.status}</td>
+          {issues.length === 0 ? (
+            <>
+              <p>There are no issues here.</p>
+              <p>
+                Get started by clicking the <b>Create Issue</b> button
+              </p>
+            </>
+          ) : (
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Key</th>
+                  <th>Title</th>
+                  <th>Assignee</th>
+                  <th>Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {issues.map((issue) => (
+                  <tr key={issue.key} className="hover">
+                    <td>
+                      <Link to={`${issue.key}`}>{issue.key}</Link>
+                    </td>
+                    <td>
+                      <Link to={`${issue.key}`}>{issue.title}</Link>
+                    </td>
+                    <td>{issue.assignee.firstName}</td>
+                    <td>{issue.status}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       )}
     </>

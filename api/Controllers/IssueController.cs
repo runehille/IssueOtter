@@ -146,4 +146,17 @@ public class IssueController : ControllerBase
 
     return NoContent();
   }
+
+  [HttpDelete("{key}")]
+  public async Task<IActionResult> DeleteByKey([FromRoute] string key)
+  {
+    var issueToDelete = await _issueRepository.DeleteByKeyAsync(key);
+
+    if (issueToDelete is null)
+    {
+      return NotFound($"Issue with key {key} not found");
+    }
+
+    return NoContent();
+  }
 }

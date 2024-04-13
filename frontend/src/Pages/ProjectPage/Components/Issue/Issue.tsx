@@ -1,10 +1,10 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
-import { getIssueByKey } from "../../../../Api/IssueApi";
+import { deleteIssue, getIssueByKey } from "../../../../Api/IssueApi";
 import { useNavigate } from "react-router-dom";
 import IssueSkeleton from "./IssueSkeleton";
 import { IssueGet } from "../../../../Models/Issue";
-import { FaCaretLeft } from "react-icons/fa6";
+import { FaCaretLeft, FaEllipsis } from "react-icons/fa6";
 
 type Props = {
   issueKey: string;
@@ -29,6 +29,14 @@ const Issue = ({ issueKey }: Props) => {
     fetchIssue();
   }, []);
 
+  const handleDelete = async (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    const token = await getAccessTokenSilently();
+    await deleteIssue(token, issueKey);
+
+    navigate(-1);
+  };
+
   return (
     <>
       {isLoading ? (
@@ -51,6 +59,26 @@ const Issue = ({ issueKey }: Props) => {
             </div>
 
             <div className="space-y-4">
+              <div className="dropdown">
+                <div tabIndex={0} role="button" className="btn m-1">
+                  <FaEllipsis />
+                </div>
+                <ul
+                  tabIndex={0}
+                  className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+                >
+                  <li
+                    className="btn btn-error"
+                    onClick={() =>
+                      (document.getElementById(
+                        "delete_issue_modal"
+                      ) as HTMLDialogElement)!.showModal()
+                    }
+                  >
+                    Delete
+                  </li>
+                </ul>
+              </div>
               <div className="shadow p-8">
                 <div className="px-4 sm:px-0">
                   <h3 className="text-base font-semibold">Information</h3>
@@ -73,11 +101,39 @@ const Issue = ({ issueKey }: Props) => {
                 </div>
               </div>
               <div>
-                <div className="text-sm">Created {issue?.createdOn}</div>
-                <div className="text-sm">Updated {issue?.lastUpdatedOn}</div>
+                <p className="text-sm">Created {issue?.createdOn}</p>
+                <p className="text-sm">Updated {issue?.lastUpdatedOn}</p>
               </div>
             </div>
+            <hr />
           </div>
+
+          <div></div>
+
+          <dialog id="delete_issue_modal" className="modal px-20 md:px-0">
+            <div className="modal-box">
+              <form method="dialog">
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                  X
+                </button>
+              </form>
+              <div className="w-full">
+                <div className="p-6 space-y-4">
+                  <h1 className="text-xl font-bold ">
+                    Are you sure you want to delete {issueKey}?
+                  </h1>
+                  <form>
+                    <button className="btn btn-error" onClick={handleDelete}>
+                      Yes, delete the issue
+                    </button>
+                  </form>
+                  <form method="dialog">
+                    <button className="btn">Cancel</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </dialog>
         </>
       )}
     </>
