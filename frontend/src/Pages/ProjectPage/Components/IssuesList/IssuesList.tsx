@@ -54,7 +54,9 @@ const IssuesList = () => {
                       <Link to={`${issue.key}`}>{issue.key}</Link>
                     </td>
                     <td>
-                      <Link to={`${issue.key}`}>{issue.title}</Link>
+                      <Link to={`${issue.key}`}>
+                        <b>{issue.title}</b>
+                      </Link>
                     </td>
                     <td>{issue.assignee.firstName}</td>
                     <td>{issue.status}</td>

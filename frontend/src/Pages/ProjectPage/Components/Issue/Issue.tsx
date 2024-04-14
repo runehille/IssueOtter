@@ -48,8 +48,8 @@ const Issue = ({ issueKey }: Props) => {
             Back
           </button>
 
-          <div className="flex  lg:space-x-64">
-            <div>
+          <div className="flex justify-evenly">
+            <div className="max-w-96 lg:min-w-96">
               <div className="px-4 sm:px-0">
                 <h3 className="text-3xl font-semibold tracking-wider">
                   {issue?.title}
@@ -79,9 +79,9 @@ const Issue = ({ issueKey }: Props) => {
                   </li>
                 </ul>
               </div>
-              <div className="shadow p-8">
+              <div className="shadow p-8 min-w-80">
                 <div className="px-4 sm:px-0">
-                  <h3 className="text-base font-semibold">Information</h3>
+                  <h3 className="text-base font-semibold">Details</h3>
                 </div>
                 <div className="mt-6 border-t border-gray-100">
                   <dl className="divide-y divide-gray-100">

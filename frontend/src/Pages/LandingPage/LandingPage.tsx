@@ -57,7 +57,7 @@ const LandingPage = () => {
           </div>
         </div>
 
-        <footer className="footer p-10 bg-neutral text-neutral-content">
+        <footer className="footer p-10 bg-neutral text-neutral-content justify-center">
           <aside>
             <p>IssueOtter 2024</p>
           </aside>
