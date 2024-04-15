@@ -97,7 +97,7 @@ public class IssueRepository : IIssueRepository
 
   public async Task<IssueModel?> GetByKeyAsync(string key)
   {
-    var issue = await _context.Issue.Include(x => x.Assignee).FirstOrDefaultAsync(x => x.Key == key);
+    var issue = await _context.Issue.Include(x => x.Assignee).Include(x => x.Comments).FirstOrDefaultAsync(x => x.Key == key);
 
     return issue;
   }

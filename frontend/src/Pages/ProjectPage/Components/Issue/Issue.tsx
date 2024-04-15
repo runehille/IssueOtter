@@ -1,10 +1,15 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
-import { deleteIssue, getIssueByKey } from "../../../../Api/IssueApi";
+import {
+  deleteIssue,
+  getComments,
+  getIssueByKey,
+} from "../../../../Api/IssueApi";
 import { useNavigate } from "react-router-dom";
 import IssueSkeleton from "./IssueSkeleton";
 import { IssueGet } from "../../../../Models/Issue";
 import { FaCaretLeft, FaEllipsis } from "react-icons/fa6";
+import { CommentGet } from "../../../../Models/Comment";
 
 type Props = {
   issueKey: string;
@@ -105,10 +110,39 @@ const Issue = ({ issueKey }: Props) => {
                 <p className="text-sm">Updated {issue?.lastUpdatedOn}</p>
               </div>
             </div>
-            <hr />
           </div>
 
-          <div></div>
+          <hr />
+          <form action="">
+            <textarea
+              placeholder="Post Comment"
+              className="textarea textarea-bordered textarea-md w-full max-w-xs"
+            ></textarea>
+            <button className="btn btn-info" type="submit">
+              Post
+            </button>
+          </form>
+          <div>
+            {issue?.comments.map((comment) => (
+              <div className="chat chat-start" key={comment.id}>
+                <div className="chat-image avatar">
+                  <div className="w-10 rounded-full">
+                    <img
+                      alt="Tailwind CSS chat bubble component"
+                      src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                    />
+                  </div>
+                </div>
+                <div className="chat-header">
+                  {comment.createdById}
+                  <time className="text-xs opacity-50 mx-2">
+                    {comment.createdOn}
+                  </time>
+                </div>
+                <div className="chat-bubble">{comment.content}</div>
+              </div>
+            ))}
+          </div>
 
           <dialog id="delete_issue_modal" className="modal px-20 md:px-0">
             <div className="modal-box">

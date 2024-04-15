@@ -13,10 +13,19 @@ export type IssueGet = {
   project: string;
   createdOn: string;
   lastUpdatedOn: string;
+  comments: Comment[];
 };
 
 export type IssuePost = {
   projectKey: string;
   title: string;
   content: string;
+};
+
+export type Comment = {
+  id: number;
+  content: string;
+  createdOn: string;
+  createdById: number;
+  issueId: number;
 };

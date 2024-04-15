@@ -1,6 +1,7 @@
 import axios from "axios";
 import { IssueGet, IssuePost } from "../Models/Issue";
 import BaseApiService from "./BaseApiService";
+import { CommentGet } from "../Models/Comment";
 
 export const getAllIssues = async (accessToken: string, key: string) => {
   try {
@@ -69,6 +70,24 @@ export const postIssue = async (accessToken: string, issue: IssuePost) => {
 export const deleteIssue = async (accessToken: string, issueKey: string) => {
   try {
     const data = await BaseApiService.delete<IssueGet>(`/issue/${issueKey}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(error.message);
+    } else {
+      console.log(error);
+      return "An unexpected error occurred. Please try again later.";
+    }
+  }
+};
+
+export const getComments = async (accessToken: string, issueKey: string) => {
+  try {
+    const data = await BaseApiService.get<CommentGet>(`/comment/${issueKey}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
