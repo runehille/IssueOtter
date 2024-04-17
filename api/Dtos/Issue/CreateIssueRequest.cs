@@ -8,8 +8,8 @@ namespace api.Dtos.Issue
   {
     [Required]
     public string Title { get; set; } = string.Empty;
-
     public string Content { get; set; } = string.Empty;
+    public string Status { get; set; } = string.Empty;
     [Required]
     public int AssigneeId { get; set; }
     [Required]

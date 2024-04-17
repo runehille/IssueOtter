@@ -13,6 +13,7 @@ type CreateFormsInputs = {
   projectKey: string;
   title: string;
   content: string;
+  status: string;
 };
 
 const validation = Yup.object().shape({
@@ -21,6 +22,7 @@ const validation = Yup.object().shape({
     .required("Project is required"),
   title: Yup.string().required("Title is required"),
   description: Yup.string(),
+  status: Yup.string(),
 });
 
 const CreateIssueModal = ({ projects }: Props) => {
@@ -45,6 +47,7 @@ const CreateIssueModal = ({ projects }: Props) => {
       title: form.title,
       content: form.content,
       projectKey: form.projectKey,
+      status: form.status,
     });
     resetForm();
   };
@@ -81,7 +84,7 @@ const CreateIssueModal = ({ projects }: Props) => {
                 className="space-y-4 md:space-y-6"
                 onSubmit={handleSubmit(handleFormSubmit)}
               >
-                <div>
+                <div className="space-y-4">
                   <select
                     {...register("projectKey")}
                     className="select select-bordered w-full max-w-xs"
@@ -101,7 +104,29 @@ const CreateIssueModal = ({ projects }: Props) => {
                   ) : (
                     ""
                   )}
+                  <label className="form-control w-full max-w-xs">
+                    <div className="label">
+                      <span className="label-text">Status</span>
+                    </div>
+                    <select
+                      {...register("status")}
+                      className="select select-bordered max-w-xs "
+                    >
+                      <option selected value="To Do">
+                        To Do
+                      </option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Done">Done</option>
+                    </select>
+                  </label>
+                  <label className="form-control w-full max-w-xs">
+                    <div className="label">
+                      <span className="label-text">Assignee</span>
+                    </div>
+                    <select className="select select-bordered max-w-xs "></select>
+                  </label>
                 </div>
+                <hr />
                 <div>
                   <input
                     {...register("title")}

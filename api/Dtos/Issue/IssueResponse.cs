@@ -10,6 +10,7 @@ public class IssueResponse
   public string Key { get; set; } = string.Empty;
   public string Title { get; set; } = string.Empty;
   public string Content { get; set; } = string.Empty;
+  public string Status { get; set; } = string.Empty;
   public int AssigneeId { get; set; }
   public UserResponse? Assignee { get; set; }
   public string CreatedOn { get; set; } = string.Empty;

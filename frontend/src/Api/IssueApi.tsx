@@ -46,6 +46,7 @@ export const postIssue = async (accessToken: string, issue: IssuePost) => {
       {
         title: issue.title,
         content: issue.content,
+        status: issue.status,
         assigneeId: 1,
         createdById: 1,
         projectKey: issue.projectKey,

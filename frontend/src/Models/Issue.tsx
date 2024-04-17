@@ -20,6 +20,7 @@ export type IssuePost = {
   projectKey: string;
   title: string;
   content: string;
+  status: string;
 };
 
 export type Comment = {

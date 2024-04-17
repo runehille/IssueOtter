@@ -13,6 +13,7 @@ public static class IssueMapper
       Key = issueModel.Key,
       Title = issueModel.Title,
       Content = issueModel.Content,
+      Status = issueModel.Status,
       Assignee = issueModel.Assignee?.MapUserModelToUserResponse(),
       CreatedBy = issueModel.CreatedBy?.MapUserModelToUserResponse(),
       CreatedOn = issueModel.CreatedOn.ToString("F"),
@@ -27,6 +28,7 @@ public static class IssueMapper
     {
       Title = createIssueRequest.Title,
       Content = createIssueRequest.Content,
+      Status = createIssueRequest.Status,
       AssigneeId = createIssueRequest.AssigneeId,
       CreatedById = createIssueRequest.CreatedById,
       LastUpdatedById = createIssueRequest.CreatedById,

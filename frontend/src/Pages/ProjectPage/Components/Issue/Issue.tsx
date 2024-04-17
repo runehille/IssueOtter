@@ -99,7 +99,7 @@ const Issue = ({ issueKey }: Props) => {
                     <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                       <dt className="text-sm font-medium">Status</dt>
                       <dd className="mt-1 text-sm col-span-2 sm:mt-0">
-                        In Progress
+                        {issue?.status}
                       </dd>
                     </div>
                   </dl>
