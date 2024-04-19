@@ -13,6 +13,7 @@ public static class CommentMapper
       Content = commentModel.Content,
       CreatedOn = commentModel.CreatedOn.ToString("F"),
       CreatedById = commentModel.CreatedById,
+      CreatedBy = commentModel.CreatedBy?.MapUserModelToUserResponse(),
       IssueId = commentModel.IssueId
     };
   }
@@ -22,7 +23,6 @@ public static class CommentMapper
     return new CommentModel
     {
       Content = createCommentRequest.Content,
-      IssueId = createCommentRequest.IssueId,
     };
   }
 }

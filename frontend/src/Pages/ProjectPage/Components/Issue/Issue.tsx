@@ -1,19 +1,26 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
-import {
-  deleteIssue,
-  getComments,
-  getIssueByKey,
-} from "../../../../Api/IssueApi";
+import { deleteIssue, getIssueByKey } from "../../../../Api/IssueApi";
 import { useNavigate } from "react-router-dom";
 import IssueSkeleton from "./IssueSkeleton";
 import { IssueGet } from "../../../../Models/Issue";
 import { FaCaretLeft, FaEllipsis } from "react-icons/fa6";
-import { CommentGet } from "../../../../Models/Comment";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { postComment } from "../../../../Api/CommentApi";
 
 type Props = {
   issueKey: string;
 };
+
+type CreateFormsInputs = {
+  comment: string;
+};
+
+const validation = Yup.object().shape({
+  comment: Yup.string().required("Comment is required."),
+});
 
 const Issue = ({ issueKey }: Props) => {
   const { getAccessTokenSilently } = useAuth0();
@@ -32,7 +39,7 @@ const Issue = ({ issueKey }: Props) => {
       }
     };
     fetchIssue();
-  }, []);
+  }, [isLoading]);
 
   const handleDelete = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
@@ -40,6 +47,29 @@ const Issue = ({ issueKey }: Props) => {
     await deleteIssue(token, issueKey);
 
     navigate(-1);
+  };
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<CreateFormsInputs>({
+    resolver: yupResolver(validation) as never,
+  });
+
+  const handleFormSubmit = async (form: CreateFormsInputs) => {
+    const token = await getAccessTokenSilently();
+    await postComment(token, {
+      comment: form.comment,
+      issueKey: issueKey,
+    });
+    resetForm();
+    setIsLoading(true);
+  };
+
+  const resetForm = () => {
+    reset();
   };
 
   return (
@@ -97,6 +127,12 @@ const Issue = ({ issueKey }: Props) => {
                       </dd>
                     </div>
                     <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                      <dt className="text-sm">Reporter</dt>
+                      <dd className="mt-1 text-sm  sm:col-span-2 sm:mt-0">
+                        {issue?.createdBy.email}
+                      </dd>
+                    </div>
+                    <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                       <dt className="text-sm font-medium">Status</dt>
                       <dd className="mt-1 text-sm col-span-2 sm:mt-0">
                         {issue?.status}
@@ -113,12 +149,25 @@ const Issue = ({ issueKey }: Props) => {
           </div>
 
           <hr />
-          <form action="">
-            <textarea
-              placeholder="Post Comment"
-              className="textarea textarea-bordered textarea-md w-full max-w-xs"
-            ></textarea>
-            <button className="btn btn-info" type="submit">
+          <form>
+            <div>
+              <textarea
+                {...register("comment")}
+                id="comment"
+                placeholder="Post Comment"
+                className="peer textarea textarea-bordered textarea-md w-full max-w-xs"
+              />
+              {errors.comment ? (
+                <p className="text-red-600">{errors.comment.message}</p>
+              ) : (
+                ""
+              )}
+            </div>
+            <button
+              className="btn btn-info"
+              type="submit"
+              onClick={handleSubmit(handleFormSubmit)}
+            >
               Post
             </button>
           </form>
@@ -134,7 +183,7 @@ const Issue = ({ issueKey }: Props) => {
                   </div>
                 </div>
                 <div className="chat-header">
-                  {comment.createdById}
+                  {comment.createdBy.email}
                   <time className="text-xs opacity-50 mx-2">
                     {comment.createdOn}
                   </time>

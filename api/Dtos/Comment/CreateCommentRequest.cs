@@ -3,5 +3,5 @@ namespace api.Dtos.Comment;
 public class CreateCommentRequest
 {
   public string Content { get; set; } = string.Empty;
-  public int IssueId { get; set; }
+  public string IssueKey { get; set; } = string.Empty;
 }

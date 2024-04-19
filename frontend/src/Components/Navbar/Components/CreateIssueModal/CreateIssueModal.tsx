@@ -21,7 +21,7 @@ const validation = Yup.object().shape({
     .notOneOf(["default"], "Project is required")
     .required("Project is required"),
   title: Yup.string().required("Title is required"),
-  description: Yup.string(),
+  content: Yup.string(),
   status: Yup.string(),
 });
 
@@ -55,6 +55,7 @@ const CreateIssueModal = ({ projects }: Props) => {
   const resetForm = () => {
     reset();
   };
+
   return (
     <>
       <button
@@ -110,9 +111,10 @@ const CreateIssueModal = ({ projects }: Props) => {
                     </div>
                     <select
                       {...register("status")}
+                      id="status"
                       className="select select-bordered max-w-xs "
                     >
-                      <option selected value="To Do">
+                      <option defaultValue="true" value="To Do">
                         To Do
                       </option>
                       <option value="In Progress">In Progress</option>
@@ -123,7 +125,10 @@ const CreateIssueModal = ({ projects }: Props) => {
                     <div className="label">
                       <span className="label-text">Assignee</span>
                     </div>
-                    <select className="select select-bordered max-w-xs "></select>
+                    <select
+                      id="assignee"
+                      className="select select-bordered max-w-xs "
+                    ></select>
                   </label>
                 </div>
                 <hr />
@@ -131,7 +136,7 @@ const CreateIssueModal = ({ projects }: Props) => {
                   <input
                     {...register("title")}
                     type="text"
-                    id="username"
+                    id="title"
                     className="input input-bordered w-full max-w-xs"
                     placeholder="Title"
                   />
@@ -144,7 +149,7 @@ const CreateIssueModal = ({ projects }: Props) => {
                 <div>
                   <textarea
                     {...register("content")}
-                    id="description"
+                    id="content"
                     className="textarea textarea-bordered h-24 w-full"
                     placeholder="Description"
                   />

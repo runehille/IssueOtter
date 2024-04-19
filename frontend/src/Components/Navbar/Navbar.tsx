@@ -96,6 +96,15 @@ const Navbar = () => {
                   </Link>
                 </li>
               ))}
+              <hr />
+              <li className="font-semibold mt-1">
+                <Link
+                  to="/app/dashboard/create-project"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  Create new project
+                </Link>
+              </li>
             </ul>
           )}
         </div>
@@ -106,6 +115,7 @@ const Navbar = () => {
         {/* Light/Dark Mode */}
         <label className="swap swap-rotate">
           <input
+            id="theme-controller"
             type="checkbox"
             value={isDarkMode ? "dark" : "light"}
             checked={isDarkMode}

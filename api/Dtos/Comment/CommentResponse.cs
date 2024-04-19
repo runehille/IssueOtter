@@ -1,3 +1,6 @@
+using api.Dtos.User;
+using api.Models;
+
 namespace api.Dtos.Comment;
 
 public class CommentResponse
@@ -6,5 +9,6 @@ public class CommentResponse
   public string? Content { get; set; }
   public string? CreatedOn { get; set; }
   public int CreatedById { get; set; }
+  public UserResponse? CreatedBy { get; set; }
   public int IssueId { get; set; }
 }

@@ -7,3 +7,8 @@ export type CommentGet = {
     lastName: string;
   };
 };
+
+export type CommentPost = {
+  comment: string;
+  issueKey: string;
+};

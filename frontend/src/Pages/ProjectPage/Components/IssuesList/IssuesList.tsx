@@ -42,9 +42,10 @@ const IssuesList = () => {
               <thead>
                 <tr>
                   <th>Key</th>
+                  <th>Status</th>
                   <th>Title</th>
                   <th>Assignee</th>
-                  <th>Status</th>
+                  <th>Created</th>
                 </tr>
               </thead>
               <tbody>
@@ -54,12 +55,27 @@ const IssuesList = () => {
                       <Link to={`${issue.key}`}>{issue.key}</Link>
                     </td>
                     <td>
+                      <p
+                        className={`${
+                          issue.status === "To Do"
+                            ? "btn"
+                            : issue.status === "In Progress"
+                            ? "btn btn-info"
+                            : issue.status === "Done"
+                            ? "btn btn-success"
+                            : ""
+                        } rounded-lg py-2 px-3 text-center font-semibold min-w-28`}
+                      >
+                        {issue.status}
+                      </p>
+                    </td>
+                    <td>
                       <Link to={`${issue.key}`}>
                         <b>{issue.title}</b>
                       </Link>
                     </td>
                     <td>{issue.assignee.firstName}</td>
-                    <td>{issue.status}</td>
+                    <td>{issue.createdOn}</td>
                   </tr>
                 ))}
               </tbody>

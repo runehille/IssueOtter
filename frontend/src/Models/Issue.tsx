@@ -11,6 +11,11 @@ export type IssueGet = {
   assigneeId: number;
   reporter: string;
   project: string;
+  createdBy: {
+    email: string;
+    firstname: string;
+    lastname: string;
+  };
   createdOn: string;
   lastUpdatedOn: string;
   comments: Comment[];
@@ -27,6 +32,11 @@ export type Comment = {
   id: number;
   content: string;
   createdOn: string;
-  createdById: number;
+  createdBy: {
+    id: number;
+    email: string;
+    firstName: string;
+    lastName: string;
+  };
   issueId: number;
 };
