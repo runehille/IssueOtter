@@ -1,5 +1,5 @@
 import { Link, Outlet } from "react-router-dom";
-import { FaAngleDoubleRight } from "react-icons/fa";
+import { FaAngleDoubleRight, FaClipboard, FaListUl } from "react-icons/fa";
 import Breadcrumbs from "../../Components/Breadcrumbs/Breadcrumbs";
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import { ProjectContext } from "./Context/Context";
@@ -58,11 +58,13 @@ const ProjectPage = ({ projectKey }: Props) => {
               <div className="mb-36">
                 <li>
                   <Link to="issues" className="text-lg">
+                    <FaListUl />
                     Issues
                   </Link>
                 </li>
                 <li>
                   <Link to="board" className="text-lg">
+                    <FaClipboard />
                     Board
                   </Link>
                 </li>
