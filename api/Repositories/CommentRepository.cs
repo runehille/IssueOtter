@@ -37,7 +37,7 @@ public class CommentRepository : ICommentRepository
       return new List<CommentModel>();
     }
 
-    var comments = await _context.Comment.Where(x => x.IssueId == issue.Id).ToListAsync();
+    var comments = await _context.Comment.Include(comment => comment.CreatedBy).Where(x => x.IssueId == issue.Id).ToListAsync();
 
     return comments;
   }

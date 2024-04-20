@@ -171,7 +171,7 @@ const Issue = ({ issueKey }: Props) => {
               Post
             </button>
           </form>
-          <div>
+          <div className="space-y-6 pb-20">
             {issue?.comments.map((comment) => (
               <div className="chat chat-start" key={comment.id}>
                 <div className="chat-image avatar">
@@ -182,13 +182,20 @@ const Issue = ({ issueKey }: Props) => {
                     />
                   </div>
                 </div>
-                <div className="chat-header">
-                  {comment.createdBy.email}
+                <div className="chat-header text-sm">
+                  {comment.createdBy?.email}
                   <time className="text-xs opacity-50 mx-2">
                     {comment.createdOn}
                   </time>
                 </div>
-                <div className="chat-bubble">{comment.content}</div>
+                <div className="flex space-x-6 items-end">
+                  <div className="chat-bubble chat-bubble-primary">
+                    {comment.content}
+                  </div>
+                  <button className="btn btn-error btn-xs btn-disabled">
+                    Delete
+                  </button>
+                </div>
               </div>
             ))}
           </div>

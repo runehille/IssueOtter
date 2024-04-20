@@ -29,10 +29,10 @@ const ProjectPage = ({ projectKey }: Props) => {
   return (
     <>
       <div className="container flex">
-        <label htmlFor="my-drawer-2" className="btn btn-sm md:hidden ">
+        <label htmlFor="my-drawer-2" className="btn btn-sm lg:hidden ">
           <FaAngleDoubleRight />
         </label>
-        <div className="drawer md:drawer-open">
+        <div className="drawer lg:drawer-open">
           <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
           <div className="drawer-content flex pl-2 lg:pl-32 sm:pt-6 border-w-2">
             <div className="space-y-12">

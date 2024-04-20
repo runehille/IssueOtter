@@ -16,12 +16,14 @@ public class IssueController : ControllerBase
   private readonly IIssueRepository _issueRepository;
   private readonly IProjectRepository _projectRepository;
   private readonly IUserRepository _userRepository;
+  private readonly ICommentRepository _commentRepository;
 
-  public IssueController(IIssueRepository issueRepository, IProjectRepository projectRepository, IUserRepository userRepository)
+  public IssueController(IIssueRepository issueRepository, IProjectRepository projectRepository, IUserRepository userRepository, ICommentRepository commentRepository)
   {
     _issueRepository = issueRepository;
     _projectRepository = projectRepository;
     _userRepository = userRepository;
+    _commentRepository = commentRepository;
   }
 
   [HttpGet]
@@ -52,12 +54,17 @@ public class IssueController : ControllerBase
   {
     var issue = await _issueRepository.GetByKeyAsync(key);
 
+
     if (issue is null)
     {
       return BadRequest("Issue not found");
     }
 
     var issueResponse = issue.MapIssueModelToIssueResponse();
+
+    var commentModels = await _commentRepository.GetAllByIssueKeyAsync(key);
+
+    issueResponse.Comments = commentModels.Select(x => x.MapCommentModelToCommentResponse()).ToList();
 
     return Ok(issueResponse);
   }

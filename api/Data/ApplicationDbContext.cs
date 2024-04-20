@@ -55,6 +55,12 @@ public class ApplicationDbContext : DbContext
         .WithOne(p => p.Issue)
         .HasForeignKey(x => x.IssueId);
 
+    // Comment
+    modelBuilder.Entity<CommentModel>()
+      .HasOne(c => c.CreatedBy)
+      .WithMany()
+      .HasForeignKey(c => c.CreatedById);
+
     // User
     modelBuilder.Entity<UserModel>()
         .HasIndex(u => u.AuthId)

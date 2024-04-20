@@ -18,7 +18,6 @@ public static class IssueMapper
       CreatedBy = issueModel.CreatedBy?.MapUserModelToUserResponse(),
       CreatedOn = issueModel.CreatedOn.ToString("F"),
       LastUpdatedOn = issueModel.LastUpdatedOn.ToString("F"),
-      Comments = issueModel.Comments.Select(x => x.MapCommentModelToCommentResponse()).ToList()
     };
   }
 
