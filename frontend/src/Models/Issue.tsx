@@ -2,6 +2,7 @@ export type IssueGet = {
   title: string;
   key: string;
   status: string;
+  type: string;
   content: string;
   assignee: {
     email: string;
@@ -26,6 +27,7 @@ export type IssuePost = {
   title: string;
   content: string;
   status: string;
+  type: string;
 };
 
 export type Comment = {

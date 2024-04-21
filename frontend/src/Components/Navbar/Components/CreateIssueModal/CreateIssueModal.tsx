@@ -14,6 +14,7 @@ type CreateFormsInputs = {
   title: string;
   content: string;
   status: string;
+  type: string;
 };
 
 const validation = Yup.object().shape({
@@ -23,6 +24,7 @@ const validation = Yup.object().shape({
   title: Yup.string().required("Title is required"),
   content: Yup.string(),
   status: Yup.string(),
+  type: Yup.string(),
 });
 
 const CreateIssueModal = ({ projects }: Props) => {
@@ -46,6 +48,7 @@ const CreateIssueModal = ({ projects }: Props) => {
     await postIssue(token, {
       title: form.title,
       content: form.content,
+      type: form.type,
       projectKey: form.projectKey,
       status: form.status,
     });
@@ -105,6 +108,21 @@ const CreateIssueModal = ({ projects }: Props) => {
                   ) : (
                     ""
                   )}
+                  <label className="form-control w-full max-w-xs">
+                    <div className="label">
+                      <span className="label-text">Type</span>
+                    </div>
+                    <select
+                      {...register("type")}
+                      id="type"
+                      className="select select-bordered max-w-xs "
+                    >
+                      <option defaultValue="true" value="Task">
+                        Task
+                      </option>
+                      <option value="Bug">Bug</option>
+                    </select>
+                  </label>
                   <label className="form-control w-full max-w-xs">
                     <div className="label">
                       <span className="label-text">Status</span>

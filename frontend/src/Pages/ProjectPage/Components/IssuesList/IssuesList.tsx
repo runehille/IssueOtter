@@ -42,6 +42,7 @@ const IssuesList = () => {
               <thead>
                 <tr>
                   <th>Key</th>
+                  <th>Type</th>
                   <th>Status</th>
                   <th>Title</th>
                   <th>Assignee</th>
@@ -54,6 +55,7 @@ const IssuesList = () => {
                     <td>
                       <Link to={`${issue.key}`}>{issue.key}</Link>
                     </td>
+                    <td>{issue.type}</td>
                     <td>
                       <p
                         className={`${
