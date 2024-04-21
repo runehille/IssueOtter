@@ -3,11 +3,18 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models;
 
+public enum IssueType
+{
+  Task,
+  Bug
+}
+
 [Table("Issue")]
 public class IssueModel
 {
   public int Id { get; set; }
   public string Key { get; set; } = string.Empty;
+  public IssueType Type { get; set; } = IssueType.Task;
   public string Title { get; set; } = string.Empty;
   public string Content { get; set; } = string.Empty;
   public string Status { get; set; } = string.Empty;

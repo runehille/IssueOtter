@@ -11,6 +11,7 @@ public static class IssueMapper
     {
       Id = issueModel.Id,
       Key = issueModel.Key,
+      Type = issueModel.Type,
       Title = issueModel.Title,
       Content = issueModel.Content,
       Status = issueModel.Status,
@@ -27,6 +28,7 @@ public static class IssueMapper
     {
       Title = createIssueRequest.Title,
       Content = createIssueRequest.Content,
+      Type = createIssueRequest.Type,
       Status = createIssueRequest.Status,
       AssigneeId = createIssueRequest.AssigneeId,
       CreatedById = createIssueRequest.CreatedById,

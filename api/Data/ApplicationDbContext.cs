@@ -55,6 +55,10 @@ public class ApplicationDbContext : DbContext
         .WithOne(p => p.Issue)
         .HasForeignKey(x => x.IssueId);
 
+    modelBuilder.Entity<IssueModel>()
+        .Property(e => e.Type)
+        .HasConversion<string>();
+
     // Comment
     modelBuilder.Entity<CommentModel>()
       .HasOne(c => c.CreatedBy)

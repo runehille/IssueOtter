@@ -1,6 +1,7 @@
 
 
 using System.ComponentModel.DataAnnotations;
+using api.Models;
 
 namespace api.Dtos.Issue
 {
@@ -9,6 +10,9 @@ namespace api.Dtos.Issue
     [Required]
     public string Title { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
+
+    [EnumDataType(typeof(IssueType))]
+    public IssueType Type { get; set; }
     public string Status { get; set; } = string.Empty;
     [Required]
     public int AssigneeId { get; set; }

@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text.Json.Serialization;
 using api.Data;
 using api.Interfaces;
 using api.Repositories;
@@ -47,7 +48,11 @@ builder.Services
     );
   });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+  .AddJsonOptions(options =>
+    {
+      options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    }); ;
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -80,6 +85,8 @@ builder.Services.AddSwaggerGen(options =>
             new string[]{}
         }
   });
+
+  options.SchemaFilter<EnumSchemaFilter>();
 });
 
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
