@@ -5,7 +5,7 @@ namespace api.Mappers;
 
 public static class CommentMapper
 {
-  public static CommentResponse MapCommentModelToCommentResponse(this CommentModel commentModel)
+  public static CommentResponse MapCommentModelToCommentResponse(this Comment commentModel)
   {
     return new CommentResponse
     {
@@ -13,14 +13,14 @@ public static class CommentMapper
       Content = commentModel.Content,
       CreatedOn = commentModel.CreatedOn.ToString("F"),
       CreatedById = commentModel.CreatedById,
-      CreatedBy = commentModel.CreatedBy?.MapUserModelToUserResponse(),
+      CreatedBy = commentModel.CreatedBy?.MapUserToUserResponse(),
       IssueId = commentModel.IssueId
     };
   }
 
-  public static CommentModel MapCreateCommentRequestToCommentModel(this CreateCommentRequest createCommentRequest)
+  public static Comment MapCreateCommentRequestToCommentModel(this CreateCommentRequest createCommentRequest)
   {
-    return new CommentModel
+    return new Comment
     {
       Content = createCommentRequest.Content,
     };

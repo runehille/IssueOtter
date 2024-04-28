@@ -16,11 +16,11 @@ public class IssueRepository : IIssueRepository
     _logger = logger;
   }
 
-  public async Task<IssueModel?> CreateAsync(IssueModel issueModel)
+  public async Task<Issue?> CreateAsync(Issue Issue)
   {
     try
     {
-      await _context.Issue!.AddAsync(issueModel);
+      await _context.Issue!.AddAsync(Issue);
       await _context.SaveChangesAsync();
     }
     catch (DbUpdateException e)
@@ -29,10 +29,10 @@ public class IssueRepository : IIssueRepository
       throw;
     }
 
-    return issueModel;
+    return Issue;
   }
 
-  public async Task<IssueModel?> DeleteAsync(int id)
+  public async Task<Issue?> DeleteAsync(int id)
   {
     var issue = await _context.Issue.FirstOrDefaultAsync(x => x.Id == id);
     if (issue == null)
@@ -46,7 +46,7 @@ public class IssueRepository : IIssueRepository
     return issue;
   }
 
-  public async Task<IssueModel?> DeleteByKeyAsync(string key)
+  public async Task<Issue?> DeleteByKeyAsync(string key)
   {
     var issue = await _context.Issue.FirstOrDefaultAsync(x => x.Key == key);
     if (issue == null)
@@ -60,27 +60,27 @@ public class IssueRepository : IIssueRepository
     return issue;
   }
 
-  public async Task<List<IssueModel>> GetAllAsync()
+  public async Task<List<Issue>> GetAllAsync()
   {
     var issues = await _context.Issue.ToListAsync();
 
     return issues;
   }
 
-  public async Task<List<IssueModel>> GetAllByProjectIdAsync(int id)
+  public async Task<List<Issue>> GetAllByProjectIdAsync(int id)
   {
     var issues = await _context.Issue.Where(x => x.ProjectId == id).ToListAsync();
 
     return issues;
   }
 
-  public async Task<List<IssueModel>> GetAllByProjectKeyAsync(string key)
+  public async Task<List<Issue>> GetAllByProjectKeyAsync(string key)
   {
     var project = await _context.Project.FirstOrDefaultAsync(x => x.Key == key);
 
     if (project is null)
     {
-      return new List<IssueModel>();
+      return new List<Issue>();
     }
 
     var issues = await _context.Issue.Include(x => x.Assignee).Where(x => x.ProjectId == project.Id).ToListAsync();
@@ -88,21 +88,21 @@ public class IssueRepository : IIssueRepository
     return issues;
   }
 
-  public async Task<IssueModel?> GetByIdAsync(int id)
+  public async Task<Issue?> GetByIdAsync(int id)
   {
     var issue = await _context.Issue.FirstOrDefaultAsync(x => x.Id == id);
 
     return issue;
   }
 
-  public async Task<IssueModel?> GetByKeyAsync(string key)
+  public async Task<Issue?> GetByKeyAsync(string key)
   {
     var issue = await _context.Issue.Include(x => x.Assignee).Include(x => x.Comments).FirstOrDefaultAsync(x => x.Key == key);
 
     return issue;
   }
 
-  public Task<IssueModel?> UpdateAsync(int id, IssueModel issueModel)
+  public Task<Issue?> UpdateAsync(int id, Issue Issue)
   {
     throw new NotImplementedException();
   }

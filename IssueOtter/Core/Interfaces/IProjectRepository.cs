@@ -4,11 +4,11 @@ namespace api.Interfaces;
 
 public interface IProjectRepository
 {
-  Task<List<ProjectModel>> GetAllAsync();
-  Task<ProjectModel> GetByIdAsync(int id);
-  Task<ProjectModel> GetByKeyAsync(string key);
-  Task<ProjectModel> CreateAsync(ProjectModel projectModel);
-  Task<ProjectModel?> DeleteByKeyAsync(string key);
-  Task<ProjectModel?> UpdateIssueCountAsync(ProjectModel projectModel);
+  Task<List<Project>> GetAllAsync();
+  Task<Project> GetByIdAsync(int id);
+  Task<Project> GetByKeyAsync(string key);
+  Task<Project> CreateAsync(Project Project);
+  Task<Project?> DeleteByKeyAsync(string key);
+  Task<Project?> UpdateIssueCountAsync(Project Project);
 
 }

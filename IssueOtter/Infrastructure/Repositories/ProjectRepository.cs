@@ -14,15 +14,15 @@ public class ProjectRepository : IProjectRepository
     _context = context;
   }
 
-  public async Task<ProjectModel> CreateAsync(ProjectModel projectModel)
+  public async Task<Project> CreateAsync(Project Project)
   {
-    await _context.Project.AddAsync(projectModel);
+    await _context.Project.AddAsync(Project);
     await _context.SaveChangesAsync();
 
-    return projectModel;
+    return Project;
   }
 
-  public async Task<ProjectModel?> DeleteByKeyAsync(string key)
+  public async Task<Project?> DeleteByKeyAsync(string key)
   {
     var project = await _context.Project.FirstOrDefaultAsync(x => x.Key == key);
 
@@ -37,13 +37,13 @@ public class ProjectRepository : IProjectRepository
     return project;
   }
 
-  public async Task<List<ProjectModel>> GetAllAsync()
+  public async Task<List<Project>> GetAllAsync()
   {
     var projects = await _context.Project.ToListAsync();
     return projects;
   }
 
-  public async Task<ProjectModel> GetByIdAsync(int projectId)
+  public async Task<Project> GetByIdAsync(int projectId)
   {
 
     var project = await _context.Project.FirstOrDefaultAsync(x => x.Id == projectId);
@@ -51,23 +51,23 @@ public class ProjectRepository : IProjectRepository
     return project!;
   }
 
-  public async Task<ProjectModel> GetByKeyAsync(string key)
+  public async Task<Project> GetByKeyAsync(string key)
   {
     var project = await _context.Project.FirstOrDefaultAsync(x => x.Key == key);
 
     return project!;
   }
 
-  public async Task<ProjectModel?> UpdateIssueCountAsync(ProjectModel projectModel)
+  public async Task<Project?> UpdateIssueCountAsync(Project Project)
   {
-    var existingProject = await _context.Project.FindAsync(projectModel.Id);
+    var existingProject = await _context.Project.FindAsync(Project.Id);
 
     if (existingProject is null)
     {
       return null;
     }
 
-    existingProject.IssueCount = projectModel.IssueCount;
+    existingProject.IssueCount = Project.IssueCount;
 
     await _context.SaveChangesAsync();
 

@@ -5,9 +5,9 @@ namespace api.Mappers;
 
 public static class UserMapper
 {
-  public static UserModel MapCreateUserRequestToUserModel(this CreateUserRequest createUserRequest)
+  public static User MapCreateUserRequestToUser(this CreateUserRequest createUserRequest)
   {
-    return new UserModel
+    return new User
     {
       Email = createUserRequest.Email,
       FirstName = createUserRequest.FirstName,
@@ -15,13 +15,13 @@ public static class UserMapper
     };
   }
 
-  public static UserResponse MapUserModelToUserResponse(this UserModel userModel)
+  public static UserResponse MapUserToUserResponse(this User User)
   {
     return new UserResponse
     {
-      Email = userModel.Email,
-      FirstName = userModel.FirstName,
-      LastName = userModel.LastName
+      Email = User.Email,
+      FirstName = User.FirstName,
+      LastName = User.LastName
     };
   }
 }

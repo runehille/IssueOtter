@@ -4,7 +4,7 @@ namespace api.Interfaces;
 
 public interface IUserRepository
 {
-  Task<UserModel?> GetByAuthId(string authId);
+  Task<User?> GetByAuthId(string authId);
   Task<bool> Exists(string authId);
-  Task<UserModel> CreateAsync(UserModel userModel);
+  Task<User> CreateAsync(User User);
 }

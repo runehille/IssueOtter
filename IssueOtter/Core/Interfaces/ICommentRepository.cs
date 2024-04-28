@@ -4,7 +4,7 @@ namespace api.Interfaces;
 
 public interface ICommentRepository
 {
-  Task<List<CommentModel>> GetAllByIssueKeyAsync(string key);
-  Task<CommentModel?> CreateAsync(CommentModel comment);
-  Task<CommentModel?> DeleteAsync(int id);
+  Task<List<Comment>> GetAllByIssueKeyAsync(string key);
+  Task<Comment?> CreateAsync(Comment comment);
+  Task<Comment?> DeleteAsync(int id);
 }

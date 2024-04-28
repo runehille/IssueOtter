@@ -29,7 +29,7 @@ public class UserController : ControllerBase
       return NoContent();
     }
 
-    var userToCreate = createUserRequest.MapCreateUserRequestToUserModel();
+    var userToCreate = createUserRequest.MapCreateUserRequestToUser();
     userToCreate.AuthId = userAuthId;
 
     try

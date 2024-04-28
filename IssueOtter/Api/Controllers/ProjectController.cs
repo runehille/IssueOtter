@@ -28,7 +28,7 @@ public class ProjectController : ControllerBase
   {
     var projects = await _projectRepository.GetAllAsync();
 
-    var projectsResponse = projects.Select(x => x.MapProjectModelToProjectResponse());
+    var projectsResponse = projects.Select(x => x.MapProjectToProjectResponse());
 
     return Ok(projectsResponse);
   }
@@ -50,7 +50,7 @@ public class ProjectController : ControllerBase
   public async Task<IActionResult> Create([FromBody] CreateProjectRequest createProjectRequest)
   {
 
-    var projectToCreate = createProjectRequest.MapCreateProjectRequestToProjectModel();
+    var projectToCreate = createProjectRequest.MapCreateProjectRequestToProject();
 
     var userAuthId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 

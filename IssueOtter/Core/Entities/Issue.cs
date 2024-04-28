@@ -10,7 +10,7 @@ public enum IssueType
 }
 
 [Table("Issue")]
-public class IssueModel
+public class Issue
 {
   public int Id { get; set; }
   public string Key { get; set; } = string.Empty;
@@ -19,15 +19,15 @@ public class IssueModel
   public string Content { get; set; } = string.Empty;
   public string Status { get; set; } = string.Empty;
   public int AssigneeId { get; set; }
-  public UserModel? Assignee { get; set; }
+  public User? Assignee { get; set; }
   public DateTime CreatedOn { get; set; } = DateTime.Now;
   public int CreatedById { get; set; }
-  public UserModel? CreatedBy { get; set; }
+  public User? CreatedBy { get; set; }
   public DateTime LastUpdatedOn { get; set; } = DateTime.Now;
   public int LastUpdatedById { get; set; }
-  public UserModel? LastUpdatedBy { get; set; }
+  public User? LastUpdatedBy { get; set; }
   public int ProjectId { get; set; }
-  public ProjectModel? Project { get; set; }
-  public List<CommentModel> Comments { get; set; } = [];
+  public Project? Project { get; set; }
+  public List<Comment> Comments { get; set; } = [];
   public bool IsDeleted { get; set; }
 }

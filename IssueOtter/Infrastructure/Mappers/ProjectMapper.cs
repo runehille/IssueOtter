@@ -5,23 +5,23 @@ namespace api.Mappers;
 
 public static class ProjectMapper
 {
-    public static ProjectResponse MapProjectModelToProjectResponse(this ProjectModel projectModel)
+  public static ProjectResponse MapProjectToProjectResponse(this Project Project)
+  {
+    return new ProjectResponse
     {
-        return new ProjectResponse
-        {
-            Key = projectModel.Key,
-            Title = projectModel.Title,
-            Description = projectModel.Description,
-        };
-    }
+      Key = Project.Key,
+      Title = Project.Title,
+      Description = Project.Description,
+    };
+  }
 
-    public static ProjectModel MapCreateProjectRequestToProjectModel(this CreateProjectRequest createProjectRequest)
+  public static Project MapCreateProjectRequestToProject(this CreateProjectRequest createProjectRequest)
+  {
+    return new Project
     {
-        return new ProjectModel
-        {
-            Key = createProjectRequest.Key,
-            Title = createProjectRequest.Title,
-            Description = createProjectRequest.Description,
-        };
-    }
+      Key = createProjectRequest.Key,
+      Title = createProjectRequest.Title,
+      Description = createProjectRequest.Description,
+    };
+  }
 }

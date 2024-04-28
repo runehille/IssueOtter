@@ -4,13 +4,13 @@ namespace api.Interfaces;
 
 public interface IIssueRepository
 {
-  Task<List<IssueModel>> GetAllAsync();
-  Task<List<IssueModel>> GetAllByProjectIdAsync(int id);
-  Task<List<IssueModel>> GetAllByProjectKeyAsync(string key);
-  Task<IssueModel?> GetByIdAsync(int id);
-  Task<IssueModel?> GetByKeyAsync(string key);
-  Task<IssueModel?> CreateAsync(IssueModel issueModel);
-  Task<IssueModel?> UpdateAsync(int id, IssueModel issueModel);
-  Task<IssueModel?> DeleteAsync(int id);
-  Task<IssueModel?> DeleteByKeyAsync(string key);
+  Task<List<Issue>> GetAllAsync();
+  Task<List<Issue>> GetAllByProjectIdAsync(int id);
+  Task<List<Issue>> GetAllByProjectKeyAsync(string key);
+  Task<Issue?> GetByIdAsync(int id);
+  Task<Issue?> GetByKeyAsync(string key);
+  Task<Issue?> CreateAsync(Issue Issue);
+  Task<Issue?> UpdateAsync(int id, Issue Issue);
+  Task<Issue?> DeleteAsync(int id);
+  Task<Issue?> DeleteByKeyAsync(string key);
 }

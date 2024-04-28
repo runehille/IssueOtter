@@ -5,7 +5,7 @@ namespace api.Mappers;
 
 public static class IssueMapper
 {
-  public static IssueResponse MapIssueModelToIssueResponse(this IssueModel issueModel)
+  public static IssueResponse MapIssueModelToIssueResponse(this Issue issueModel)
   {
     return new IssueResponse
     {
@@ -15,16 +15,16 @@ public static class IssueMapper
       Title = issueModel.Title,
       Content = issueModel.Content,
       Status = issueModel.Status,
-      Assignee = issueModel.Assignee?.MapUserModelToUserResponse(),
-      CreatedBy = issueModel.CreatedBy?.MapUserModelToUserResponse(),
+      Assignee = issueModel.Assignee?.MapUserToUserResponse(),
+      CreatedBy = issueModel.CreatedBy?.MapUserToUserResponse(),
       CreatedOn = issueModel.CreatedOn.ToString("F"),
       LastUpdatedOn = issueModel.LastUpdatedOn.ToString("F"),
     };
   }
 
-  public static IssueModel MapCreateIssueRequestToIssueModel(this CreateIssueRequest createIssueRequest)
+  public static Issue MapCreateIssueRequestToIssueModel(this CreateIssueRequest createIssueRequest)
   {
-    return new IssueModel
+    return new Issue
     {
       Title = createIssueRequest.Title,
       Content = createIssueRequest.Content,
