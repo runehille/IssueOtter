@@ -1,7 +1,6 @@
-using api.Models;
+using IssueOtter.Core.Entities;
 
-namespace api.Interfaces;
-
+namespace IssueOtter.Core.Interfaces;
 public interface IUserRepository
 {
   Task<User?> GetByAuthId(string authId);

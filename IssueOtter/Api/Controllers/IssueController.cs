@@ -1,12 +1,12 @@
-using api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using api.Mappers;
-using api.Dtos.Issue;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using IssueOtter.Core.Interfaces;
+using IssueOtter.Core.Dtos.Issue;
+using IssueOtter.Infrastructure.Mappers;
 
-namespace api.Controllers;
+namespace IssueOtter.Api.Controllers;
 
 [ApiController]
 [Route("api/issue")]
@@ -64,7 +64,7 @@ public class IssueController : ControllerBase
 
     var commentModels = await _commentRepository.GetAllByIssueKeyAsync(key);
 
-    issueResponse.Comments = commentModels.Select(x => x.MapCommentModelToCommentResponse()).ToList();
+    issueResponse.Comments = commentModels.Select(x => x.MapCommentToCommentResponse()).ToList();
 
     return Ok(issueResponse);
   }

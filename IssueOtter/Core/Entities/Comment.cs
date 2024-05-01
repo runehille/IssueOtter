@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace api.Models;
+namespace IssueOtter.Core.Entities;
 
 [Table("Comment")]
 public class Comment

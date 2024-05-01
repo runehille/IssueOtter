@@ -1,24 +1,24 @@
-using api.Dtos.Comment;
-using api.Models;
+using IssueOtter.Core.Dtos.Comment;
+using IssueOtter.Core.Entities;
 
-namespace api.Mappers;
+namespace IssueOtter.Infrastructure.Mappers;
 
 public static class CommentMapper
 {
-  public static CommentResponse MapCommentModelToCommentResponse(this Comment commentModel)
+  public static CommentResponse MapCommentToCommentResponse(this Comment comment)
   {
     return new CommentResponse
     {
-      Id = commentModel.Id,
-      Content = commentModel.Content,
-      CreatedOn = commentModel.CreatedOn.ToString("F"),
-      CreatedById = commentModel.CreatedById,
-      CreatedBy = commentModel.CreatedBy?.MapUserToUserResponse(),
-      IssueId = commentModel.IssueId
+      Id = comment.Id,
+      Content = comment.Content,
+      CreatedOn = comment.CreatedOn.ToString("F"),
+      CreatedById = comment.CreatedById,
+      CreatedBy = comment.CreatedBy?.MapUserToUserResponse(),
+      IssueId = comment.IssueId
     };
   }
 
-  public static Comment MapCreateCommentRequestToCommentModel(this CreateCommentRequest createCommentRequest)
+  public static Comment MapCreateCommentRequestToComment(this CreateCommentRequest createCommentRequest)
   {
     return new Comment
     {

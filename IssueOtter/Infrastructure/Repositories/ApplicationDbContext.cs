@@ -1,7 +1,7 @@
-using api.Models;
+using IssueOtter.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Data;
+namespace IssueOtter.Infrastructure.Repositories;
 
 public class ApplicationDbContext : DbContext
 {

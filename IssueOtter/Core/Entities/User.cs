@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Reflection.Metadata;
 
-namespace api.Models;
+namespace IssueOtter.Core.Entities;
 
 [Table("User")]
 public class User

@@ -1,8 +1,7 @@
 using System.Security.Claims;
-using System.Text.Json;
-using api.Dtos.Project;
-using api.Interfaces;
-using api.Mappers;
+using IssueOtter.Core.Dtos.Project;
+using IssueOtter.Core.Interfaces;
+using IssueOtter.Infrastructure.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

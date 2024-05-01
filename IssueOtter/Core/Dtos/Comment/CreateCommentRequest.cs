@@ -1,4 +1,4 @@
-namespace api.Dtos.Comment;
+namespace IssueOtter.Core.Dtos.Comment;
 
 public class CreateCommentRequest
 {

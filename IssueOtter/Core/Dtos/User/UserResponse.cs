@@ -1,4 +1,4 @@
-namespace api.Dtos.User;
+namespace IssueOtter.Core.Dtos.User;
 
 public class UserResponse
 {

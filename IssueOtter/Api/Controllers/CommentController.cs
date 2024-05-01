@@ -1,12 +1,12 @@
 using System.Security.Claims;
-using api.Dtos.Comment;
-using api.Interfaces;
-using api.Mappers;
+using IssueOtter.Core.Dtos.Comment;
+using IssueOtter.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using IssueOtter.Infrastructure.Mappers;
 
-namespace api.Controllers;
+namespace IssueOtter.Api.Controllers;
 
 [ApiController]
 [Route("api/comment")]
@@ -29,7 +29,7 @@ public class CommentController : ControllerBase
   {
     var comments = await _commentRepository.GetAllByIssueKeyAsync(key);
 
-    var CommentResponse = comments.Select(x => x.MapCommentModelToCommentResponse());
+    var CommentResponse = comments.Select(x => x.MapCommentToCommentResponse());
 
     return Ok(CommentResponse);
   }
@@ -45,7 +45,7 @@ public class CommentController : ControllerBase
       return NotFound("Issue not found.");
     }
 
-    var commentToCreate = createCommentRequest.MapCreateCommentRequestToCommentModel();
+    var commentToCreate = createCommentRequest.MapCreateCommentRequestToComment();
 
     commentToCreate.IssueId = issue.Id;
 

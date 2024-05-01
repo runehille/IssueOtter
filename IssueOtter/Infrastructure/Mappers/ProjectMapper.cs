@@ -1,7 +1,7 @@
-using api.Dtos.Project;
-using api.Models;
+using IssueOtter.Core.Dtos.Project;
+using IssueOtter.Core.Entities;
 
-namespace api.Mappers;
+namespace IssueOtter.Infrastructure.Mappers;
 
 public static class ProjectMapper
 {

@@ -1,9 +1,8 @@
 using System.Security.Claims;
 using System.Text.Json.Serialization;
-using api.Data;
-using api.Interfaces;
-using api.Repositories;
 using api.Utils.Auth;
+using IssueOtter.Core.Interfaces;
+using IssueOtter.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

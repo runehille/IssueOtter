@@ -1,7 +1,7 @@
 using System.Security.Claims;
-using api.Dtos.User;
-using api.Interfaces;
-using api.Mappers;
+using IssueOtter.Core.Dtos.User;
+using IssueOtter.Core.Interfaces;
+using IssueOtter.Infrastructure.Mappers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

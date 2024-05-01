@@ -1,7 +1,7 @@
-using api.Dtos.Issue;
-using api.Models;
+using IssueOtter.Core.Dtos.Issue;
+using IssueOtter.Core.Entities;
 
-namespace api.Mappers;
+namespace IssueOtter.Infrastructure.Mappers;
 
 public static class IssueMapper
 {

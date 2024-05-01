@@ -1,9 +1,8 @@
-using api.Data;
-using api.Interfaces;
-using api.Models;
+using IssueOtter.Core.Entities;
+using IssueOtter.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Repositories;
+namespace IssueOtter.Infrastructure.Repositories;
 
 public class UserRepository : IUserRepository
 {

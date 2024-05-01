@@ -1,7 +1,7 @@
-using api.Dtos.User;
-using api.Models;
+using IssueOtter.Core.Dtos.User;
+using IssueOtter.Core.Entities;
 
-namespace api.Mappers;
+namespace IssueOtter.Infrastructure.Mappers;
 
 public static class UserMapper
 {

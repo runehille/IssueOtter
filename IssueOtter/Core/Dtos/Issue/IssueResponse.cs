@@ -1,8 +1,8 @@
-using api.Dtos.Comment;
-using api.Dtos.User;
-using api.Models;
+using IssueOtter.Core.Dtos.Comment;
+using IssueOtter.Core.Dtos.User;
+using IssueOtter.Core.Entities;
 
-namespace api.Dtos.Issue;
+namespace IssueOtter.Core.Dtos.Issue;
 
 public class IssueResponse
 {

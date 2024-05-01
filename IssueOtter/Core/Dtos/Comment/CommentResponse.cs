@@ -1,7 +1,6 @@
-using api.Dtos.User;
-using api.Models;
+using IssueOtter.Core.Dtos.User;
 
-namespace api.Dtos.Comment;
+namespace IssueOtter.Core.Dtos.Comment;
 
 public class CommentResponse
 {
