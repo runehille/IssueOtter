@@ -4,7 +4,7 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using IssueOtter.Core.Interfaces;
 using IssueOtter.Core.Dtos.Issue;
-using IssueOtter.Infrastructure.Mappers;
+using IssueOtter.Core.Mappers;
 
 namespace IssueOtter.Api.Controllers;
 

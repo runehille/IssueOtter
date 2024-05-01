@@ -1,7 +1,7 @@
 using IssueOtter.Core.Dtos.Project;
 using IssueOtter.Core.Entities;
 
-namespace IssueOtter.Infrastructure.Mappers;
+namespace IssueOtter.Core.Mappers;
 
 public static class ProjectMapper
 {
