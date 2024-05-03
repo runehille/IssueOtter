@@ -1,12 +1,10 @@
 using System.Security.Claims;
 using IssueOtter.Core.Dtos.Project;
 using IssueOtter.Core.Interfaces;
-using IssueOtter.Core.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-namespace api.Controllers;
+namespace IssueOtter.Api.Controllers;
 
 [ApiController]
 [Route("api/project")]
@@ -15,27 +13,27 @@ public class ProjectController : ControllerBase
 {
   private readonly IProjectRepository _projectRepository;
   private readonly IUserRepository _userRepository;
+  private readonly IProjectService _projectService;
 
-  public ProjectController(IProjectRepository projectRepository, IUserRepository userRepository)
+  public ProjectController(IProjectRepository projectRepository, IUserRepository userRepository, IProjectService projectService)
   {
     _projectRepository = projectRepository;
     _userRepository = userRepository;
+    _projectService = projectService;
   }
 
   [HttpGet]
-  public async Task<ActionResult> GetAll()
+  public async Task<IActionResult> GetAll()
   {
-    var projects = await _projectRepository.GetAllAsync();
+    var result = await _projectService.GetAllProjectsAsync();
 
-    var projectsResponse = projects.Select(x => x.MapProjectToProjectResponse());
-
-    return Ok(projectsResponse);
+    return Ok(result);
   }
 
-  [HttpGet("{key:alpha}")]
-  public async Task<ActionResult> GetByKey([FromRoute] string key)
+  [HttpGet("{key:alpha}", Name = "GetByKey")]
+  public async Task<IActionResult> GetByKey([FromRoute] string key)
   {
-    var project = await _projectRepository.GetByKeyAsync(key);
+    var project = await _projectService.GetProjectByKeyAsync(key);
 
     if (project is null)
     {
@@ -49,33 +47,21 @@ public class ProjectController : ControllerBase
   public async Task<IActionResult> Create([FromBody] CreateProjectRequest createProjectRequest)
   {
 
-    var projectToCreate = createProjectRequest.MapCreateProjectRequestToProject();
-
     var userAuthId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
 
     if (userAuthId is null)
     {
       return BadRequest("User not found");
     }
-    var user = await _userRepository.GetByAuthId(userAuthId);
 
-    if (user is not null)
+    var project = await _projectService.CreateProjectAsync(createProjectRequest, userAuthId);
+
+    if (project is null)
     {
-      projectToCreate.AdminId = user.Id;
-      projectToCreate.CreatedById = user.Id;
+      return StatusCode(500, "Server error when creating project.");
     }
 
-    try
-    {
-      await _projectRepository.CreateAsync(projectToCreate);
-    }
-    catch (DbUpdateException)
-    {
-      return BadRequest("Cannot create project");
-    }
-
-    return Created();
+    return CreatedAtAction(nameof(GetByKey), new { key = project.Key }, project);
   }
 
   [HttpDelete("{key}")]

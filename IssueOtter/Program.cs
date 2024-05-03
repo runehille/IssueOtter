@@ -1,12 +1,13 @@
 using System.Security.Claims;
 using System.Text.Json.Serialization;
-using api.Utils.Auth;
 using IssueOtter.Core.Interfaces;
+using IssueOtter.Core.Features;
 using IssueOtter.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using IssueOtter.Api.Utils.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -100,6 +101,9 @@ builder.Services.AddScoped<IIssueRepository, IssueRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+
+builder.Services.AddScoped<IProjectService, ProjectService>();
+
 
 var app = builder.Build();
 

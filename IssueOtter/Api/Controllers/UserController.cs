@@ -5,7 +5,7 @@ using IssueOtter.Core.Mappers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Controllers;
+namespace IssueOtter.Api.Controllers;
 
 [ApiController]
 [Route("api/user")]
