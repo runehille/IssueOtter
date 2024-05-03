@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 
-namespace api.Utils.Auth;
+namespace IssueOtter.Api.Utils.Auth;
 public class HasScopeHandler : AuthorizationHandler<HasScopeRequirement>
 {
   protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, HasScopeRequirement requirement)

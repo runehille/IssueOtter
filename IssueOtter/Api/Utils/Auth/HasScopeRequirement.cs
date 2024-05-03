@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 
-namespace api.Utils.Auth;
+namespace IssueOtter.Api.Utils.Auth;
 
 public class HasScopeRequirement : IAuthorizationRequirement
 {
