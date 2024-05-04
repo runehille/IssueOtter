@@ -1,7 +1,6 @@
 using IssueOtter.Core.Dtos.Project;
 using IssueOtter.Core.Interfaces;
 using IssueOtter.Core.Mappers;
-using Microsoft.EntityFrameworkCore;
 
 namespace IssueOtter.Core.Features;
 
@@ -32,6 +31,19 @@ public class ProjectService : IProjectService
     var project = await _projectRepository.GetByIdAsync(projectToCreate.Id);
     return project.MapProjectToProjectResponse();
 
+  }
+
+  public async Task<ProjectResponse?> DeleteProjectByKeyAsync(string key)
+  {
+
+    var project = await _projectRepository.DeleteByKeyAsync(key);
+
+    if (project is null)
+    {
+      return null;
+    }
+
+    return project.MapProjectToProjectResponse();
   }
 
   public async Task<List<ProjectResponse>> GetAllProjectsAsync()
