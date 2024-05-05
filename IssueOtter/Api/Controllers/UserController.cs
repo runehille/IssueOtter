@@ -1,9 +1,7 @@
 using System.Security.Claims;
 using IssueOtter.Core.Dtos.User;
 using IssueOtter.Core.Interfaces;
-using IssueOtter.Core.Mappers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace IssueOtter.Api.Controllers;
 
@@ -11,35 +9,27 @@ namespace IssueOtter.Api.Controllers;
 [Route("api/user")]
 public class UserController : ControllerBase
 {
-  private readonly IUserRepository _userRepository;
+  private readonly IUserService _userService;
 
-  public UserController(IUserRepository userRepository)
+  public UserController(IUserService userService)
   {
-    _userRepository = userRepository;
+    _userService = userService;
   }
 
   [HttpPost]
   public async Task<IActionResult> Create([FromBody] CreateUserRequest createUserRequest)
   {
-
     var userAuthId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-    if (await _userRepository.Exists(userAuthId!))
+    if (userAuthId is null)
     {
-      return NoContent();
+      return BadRequest("Access token error. Could not create user.");
     }
+    var createdUser = await _userService.CreateUserAync(createUserRequest, userAuthId);
 
-    var userToCreate = createUserRequest.MapCreateUserRequestToUser();
-    userToCreate.AuthId = userAuthId;
-
-    try
+    if (createdUser is null)
     {
-      await _userRepository.CreateAsync(userToCreate);
-    }
-    catch (DbUpdateException)
-    {
-
-      return Conflict("User already in database");
+      return StatusCode(500, "Something went wrong, could not create user.");
     }
 
     return Created();

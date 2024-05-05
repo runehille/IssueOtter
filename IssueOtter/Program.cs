@@ -11,6 +11,7 @@ using IssueOtter.Core.Interfaces;
 using IssueOtter.Core.Services.Project;
 using IssueOtter.Core.Services.Issue;
 using IssueOtter.Core.Services.Comment;
+using IssueOtter.Core.Services.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -100,15 +101,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
   options.UseMySql(connectionString, serverVersion);
 });
 
-builder.Services.AddScoped<IIssueRepository, IssueRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IIssueRepository, IssueRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IIssueService, IssueService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
-
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
