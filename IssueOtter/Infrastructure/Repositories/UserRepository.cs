@@ -23,6 +23,7 @@ public class UserRepository : IUserRepository
     }
     catch (DbUpdateException ex)
     {
+      // TODO Handle exception.
     }
 
     return User;
