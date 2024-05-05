@@ -11,14 +11,10 @@ namespace IssueOtter.Api.Controllers;
 [Authorize]
 public class ProjectController : ControllerBase
 {
-  private readonly IProjectRepository _projectRepository;
-  private readonly IUserRepository _userRepository;
   private readonly IProjectService _projectService;
 
-  public ProjectController(IProjectRepository projectRepository, IUserRepository userRepository, IProjectService projectService)
+  public ProjectController(IProjectService projectService)
   {
-    _projectRepository = projectRepository;
-    _userRepository = userRepository;
     _projectService = projectService;
   }
 
