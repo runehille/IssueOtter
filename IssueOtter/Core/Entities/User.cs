@@ -1,8 +1,5 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace IssueOtter.Core.Entities;
 
-[Table("User")]
 public class User
 {
   public int Id { get; set; }
