@@ -5,6 +5,7 @@ namespace IssueOtter.Core.Mappers;
 
 public static class IssueMapper
 {
+  // TODO Remove "Model" from function names
   public static IssueResponse MapIssueModelToIssueResponse(this Issue issueModel)
   {
     return new IssueResponse

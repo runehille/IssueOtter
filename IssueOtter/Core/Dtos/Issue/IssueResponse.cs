@@ -20,5 +20,7 @@ public class IssueResponse
   public string LastUpdatedOn { get; set; } = string.Empty;
   public int ProjectId { get; set; }
   public List<CommentResponse> Comments { get; set; } = [];
+
+  // TODO Remove IsDeleted
   public bool IsDeleted { get; set; }
 }

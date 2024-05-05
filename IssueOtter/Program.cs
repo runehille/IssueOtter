@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using IssueOtter.Api.Utils.Auth;
+using IssueOtter.Core.Services.Issue;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -103,6 +104,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IIssueService, IssueService>();
 
 
 var app = builder.Build();

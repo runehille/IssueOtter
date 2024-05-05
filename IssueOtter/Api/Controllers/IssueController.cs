@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using Microsoft.EntityFrameworkCore;
 using IssueOtter.Core.Interfaces;
 using IssueOtter.Core.Dtos.Issue;
-using IssueOtter.Core.Mappers;
 
 namespace IssueOtter.Api.Controllers;
 
@@ -13,33 +11,25 @@ namespace IssueOtter.Api.Controllers;
 [Authorize]
 public class IssueController : ControllerBase
 {
-  private readonly IIssueRepository _issueRepository;
-  private readonly IProjectRepository _projectRepository;
-  private readonly IUserRepository _userRepository;
-  private readonly ICommentRepository _commentRepository;
+  private readonly IIssueService _issueService;
 
-  public IssueController(IIssueRepository issueRepository, IProjectRepository projectRepository, IUserRepository userRepository, ICommentRepository commentRepository)
+  public IssueController(IIssueService issueService)
   {
-    _issueRepository = issueRepository;
-    _projectRepository = projectRepository;
-    _userRepository = userRepository;
-    _commentRepository = commentRepository;
+    _issueService = issueService;
   }
 
   [HttpGet]
   public async Task<IActionResult> GetAll()
   {
-    var issues = await _issueRepository.GetAllAsync();
+    var issues = await _issueService.GetAllIssuesAsync();
 
-    var issuesResponse = issues.Select(x => x.MapIssueModelToIssueResponse());
-
-    return Ok(issuesResponse);
+    return Ok(issues);
   }
 
   [HttpGet("{id:int}")]
   public async Task<IActionResult> GetById([FromRoute] int id)
   {
-    var issue = await _issueRepository.GetByIdAsync(id);
+    var issue = await _issueService.GetIssueByIdAsync(id);
 
     if (issue is null)
     {
@@ -52,101 +42,60 @@ public class IssueController : ControllerBase
   [HttpGet("{key}")]
   public async Task<IActionResult> GetByKey([FromRoute] string key)
   {
-    var issue = await _issueRepository.GetByKeyAsync(key);
-
+    var issue = await _issueService.GetIssueByKeyAsync(key);
 
     if (issue is null)
     {
       return BadRequest("Issue not found");
     }
 
-    var issueResponse = issue.MapIssueModelToIssueResponse();
-
-    var commentModels = await _commentRepository.GetAllByIssueKeyAsync(key);
-
-    issueResponse.Comments = commentModels.Select(x => x.MapCommentToCommentResponse()).ToList();
-
-    return Ok(issueResponse);
+    return Ok(issue);
   }
 
 
   [HttpGet("project/{projectId:int}")]
   public async Task<IActionResult> GetAllByProjectId([FromRoute] int projectId)
   {
-    var issues = await _issueRepository.GetAllByProjectIdAsync(projectId);
+    var issues = await _issueService.GetIssuesByProjectIdAsync(projectId);
 
-    var issuesResponse = issues.Select(x => x.MapIssueModelToIssueResponse());
-
-    return Ok(issuesResponse);
+    return Ok(issues);
   }
 
 
   [HttpGet("project/{projectKey}")]
   public async Task<IActionResult> GetAllByProjectKey([FromRoute] string projectKey)
   {
-    var issues = await _issueRepository.GetAllByProjectKeyAsync(projectKey);
+    var issues = await _issueService.GetIssuesByProjectKeyAsync(projectKey);
 
-    var issuesResponse = issues.Select(x => x.MapIssueModelToIssueResponse());
-
-    return Ok(issuesResponse);
+    return Ok(issues);
   }
 
   [HttpPost]
   public async Task<IActionResult> Create([FromBody] CreateIssueRequest createIssueRequest)
   {
-    if (!ModelState.IsValid)
-    {
-      return BadRequest(ModelState);
-    }
-
-    var issueToCreate = createIssueRequest.MapCreateIssueRequestToIssueModel();
-
-    var project = await _projectRepository.GetByKeyAsync(createIssueRequest.ProjectKey);
-
-    if (project is null)
-    {
-      return BadRequest("Project not found");
-    }
-
-    issueToCreate.ProjectId = project.Id;
     var userAuthId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
 
     if (userAuthId is null)
     {
-      return BadRequest("User not found");
+      return BadRequest("Access token user error. The logged in user is not found in database.");
     }
-    var user = await _userRepository.GetByAuthId(userAuthId);
 
-    if (user is not null)
+    var issue = await _issueService.CreateIssueAsync(createIssueRequest, userAuthId);
+
+    if (issue is null)
     {
-      issueToCreate.CreatedById = user.Id;
-      issueToCreate.AssigneeId = user.Id;
-      issueToCreate.LastUpdatedById = user.Id;
+      return StatusCode(500, "Server error when creating issue.");
     }
 
-    project.IssueCount++;
-    issueToCreate.Key = $"{project.Key}-{project.IssueCount}";
-
-    try
-    {
-      await _projectRepository.UpdateIssueCountAsync(project);
-      await _issueRepository.CreateAsync(issueToCreate);
-    }
-    catch (DbUpdateException e)
-    {
-      return BadRequest($"Could not create issue: {e}");
-    }
-
-    return Created();
+    return CreatedAtAction(nameof(GetByKey), new { key = issue.Key }, issue);
   }
 
   [HttpDelete("{id:int}")]
   public async Task<IActionResult> Delete([FromRoute] int id)
   {
-    var issueToDelete = await _issueRepository.DeleteAsync(id);
+    var deletedIssue = await _issueService.DeleteIssueByIdAsync(id);
 
-    if (issueToDelete is null)
+    if (deletedIssue is null)
     {
       return NotFound($"Issue with id {id} not found");
     }
@@ -157,9 +106,9 @@ public class IssueController : ControllerBase
   [HttpDelete("{key}")]
   public async Task<IActionResult> DeleteByKey([FromRoute] string key)
   {
-    var issueToDelete = await _issueRepository.DeleteByKeyAsync(key);
+    var deletedIssue = await _issueService.DeleteIssueByKeyAsync(key);
 
-    if (issueToDelete is null)
+    if (deletedIssue is null)
     {
       return NotFound($"Issue with key {key} not found");
     }
