@@ -1,10 +1,9 @@
 using System.Security.Claims;
-using IssueOtter.Core.Dtos.Comment;
-using IssueOtter.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using IssueOtter.Core.Mappers;
+
+using IssueOtter.Core.Dtos.Comment;
+using IssueOtter.Core.Interfaces;
 
 namespace IssueOtter.Api.Controllers;
 
@@ -13,64 +12,36 @@ namespace IssueOtter.Api.Controllers;
 [Authorize]
 public class CommentController : ControllerBase
 {
-  private readonly ICommentRepository _commentRepository;
-  private readonly IUserRepository _userRepository;
-  private readonly IIssueRepository _issueRepository;
+  private readonly ICommentService _commentService;
 
-  public CommentController(ICommentRepository commentRepository, IUserRepository userRepository, IIssueRepository issueRepository)
+  public CommentController(ICommentService commentService)
   {
-    _commentRepository = commentRepository;
-    _userRepository = userRepository;
-    _issueRepository = issueRepository;
+    _commentService = commentService;
   }
 
   [HttpGet("issue/{key}")]
   public async Task<IActionResult> GetAllByIssueKey([FromRoute] string key)
   {
-    var comments = await _commentRepository.GetAllByIssueKeyAsync(key);
+    var comments = await _commentService.GetCommentsByIssueKeyAsync(key);
 
-    var CommentResponse = comments.Select(x => x.MapCommentToCommentResponse());
-
-    return Ok(CommentResponse);
+    return Ok(comments);
   }
 
   [HttpPost]
   public async Task<IActionResult> Create([FromBody] CreateCommentRequest createCommentRequest)
   {
-
-    var issue = await _issueRepository.GetByKeyAsync(createCommentRequest.IssueKey);
-
-    if (issue is null)
-    {
-      return NotFound("Issue not found.");
-    }
-
-    var commentToCreate = createCommentRequest.MapCreateCommentRequestToComment();
-
-    commentToCreate.IssueId = issue.Id;
-
-
     var userAuthId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
     if (userAuthId is null)
     {
       return NotFound("User not found");
     }
-    var user = await _userRepository.GetByAuthId(userAuthId);
 
-    if (user is null)
-    {
-      return NotFound("User not found");
-    }
-    commentToCreate.CreatedById = user.Id;
+    var createdComment = await _commentService.CreateCommentAsync(createCommentRequest, userAuthId);
 
-    try
+    if (createdComment is null)
     {
-      await _commentRepository.CreateAsync(commentToCreate);
-    }
-    catch (DbUpdateException e)
-    {
-      return BadRequest($"Could not create comment: {e}");
+      return StatusCode(500, "Server error when creating comment.");
     }
 
     return Created();
