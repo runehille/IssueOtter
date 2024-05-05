@@ -1,13 +1,14 @@
 using System.Security.Claims;
 using System.Text.Json.Serialization;
-using IssueOtter.Core.Interfaces;
-using IssueOtter.Core.Features;
-using IssueOtter.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
+
 using IssueOtter.Api.Utils.Auth;
+using IssueOtter.Infrastructure.Repositories;
+using IssueOtter.Core.Interfaces;
+using IssueOtter.Core.Services.Project;
 using IssueOtter.Core.Services.Issue;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -2,7 +2,7 @@ using IssueOtter.Core.Dtos.Project;
 using IssueOtter.Core.Interfaces;
 using IssueOtter.Core.Mappers;
 
-namespace IssueOtter.Core.Features;
+namespace IssueOtter.Core.Services.Project;
 
 public class ProjectService : IProjectService
 {
