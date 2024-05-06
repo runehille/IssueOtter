@@ -28,4 +28,6 @@ jobs:
           VITE_REACT_APP_AUTH0_AUDIENCE: ${{secrets.VITE_REACT_APP_AUTH0_AUDIENCE}}
           VITE_REACT_APP_AUTH0_CLIENT_ID: ${{secrets.VITE_REACT_APP_AUTH0_CLIENT_ID}}
           VITE_REACT_APP_AUTH0_DOMAIN: ${{secrets.VITE_REACT_APP_AUTH0_DOMAIN}}
+          VITE_REACT_APP_ROOTURL: ${{secrets.VITE_REACT_APP_ROOTURL}}
+          
           ###### End of Repository/Build Configurations ######
