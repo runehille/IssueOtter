@@ -19,16 +19,13 @@ public class Project
 
   public string Description { get; set; } = string.Empty;
 
-  [Required]
-  public int AdminId { get; set; }
+  public int? AdminId { get; set; }
 
   public User? Admin { get; set; }
 
-  [Required]
   public DateTime CreatedOn { get; set; } = DateTime.Now;
 
-  [Required]
-  public int CreatedById { get; set; }
+  public int? CreatedById { get; set; }
 
   public User? CreatedBy { get; set; }
 

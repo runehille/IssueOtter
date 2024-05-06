@@ -93,12 +93,12 @@ builder.Services.AddSwaggerGen(options =>
   options.SchemaFilter<EnumSchemaFilter>();
 });
 
-var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+var connectionString = builder.Configuration.GetConnectionString("MSSqlConnection");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-  options.UseMySql(connectionString, serverVersion);
+  options.UseSqlServer(connectionString);
 });
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();

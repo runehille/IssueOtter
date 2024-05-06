@@ -1,8 +1,5 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace IssueOtter.Core.Entities;
 
-[Table("Comment")]
 public class Comment
 {
   public int Id { get; set; }
