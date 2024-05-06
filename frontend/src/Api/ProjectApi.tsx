@@ -4,16 +4,13 @@ import BaseApiService from "./BaseApiService";
 
 export const getAllProjects = async (accessToken: string) => {
   try {
-    const data = await BaseApiService.get<ProjectGet>("/project", {
+    const data = await BaseApiService.get<ProjectGet[]>("/project", {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     return data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.message);
-    } else {
-      console.log(error);
-      return "An unexpected error occurred. Please try again later.";
     }
   }
 };
@@ -27,9 +24,6 @@ export const getProjectByKey = async (accessToken: string, key: string) => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.message);
-    } else {
-      console.log(error);
-      return "An unexpected error occurred. Please try again later.";
     }
   }
 };
@@ -56,9 +50,6 @@ export const postProject = async (
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.message);
-    } else {
-      console.log(error);
-      return "An unexpected error occurred. Please try again later.";
     }
   }
 };
@@ -74,9 +65,6 @@ export const deleteProject = async (accessToken: string, key: string) => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.message);
-    } else {
-      console.log(error);
-      return "An unexpected error occurred. Please try again later.";
     }
   }
 };
