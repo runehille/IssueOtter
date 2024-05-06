@@ -8,6 +8,7 @@ import { router } from "./Routes/routes";
 const authDomain = import.meta.env.VITE_REACT_APP_AUTH0_DOMAIN;
 const authClientId = import.meta.env.VITE_REACT_APP_AUTH0_CLIENT_ID;
 const authAudience = import.meta.env.VITE_REACT_APP_AUTH0_AUDIENCE;
+const rootUrl = import.meta.env.VITE_REACT_APP_ROOTURL;
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -16,7 +17,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       clientId={authClientId}
       authorizationParams={{
         audience: authAudience,
-        redirect_uri: "http://localhost:5173/app/dashboard",
+        redirect_uri: `${rootUrl}/app/dashboard`,
       }}
     >
       <RouterProvider router={router} />
