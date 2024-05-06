@@ -4,7 +4,7 @@ import BaseApiService from "./BaseApiService";
 
 export const getAllIssues = async (accessToken: string, key: string) => {
   try {
-    const data = await BaseApiService.get<IssueGet>(`/issue/project/${key}`, {
+    const data = await BaseApiService.get<IssueGet[]>(`/issue/project/${key}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -13,9 +13,6 @@ export const getAllIssues = async (accessToken: string, key: string) => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.message);
-    } else {
-      console.log(error);
-      return "An unexpected error occurred. Please try again later.";
     }
   }
 };
@@ -31,9 +28,6 @@ export const getIssueByKey = async (accessToken: string, issueKey: string) => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.message);
-    } else {
-      console.log(error);
-      return "An unexpected error occurred. Please try again later.";
     }
   }
 };
@@ -61,9 +55,6 @@ export const postIssue = async (accessToken: string, issue: IssuePost) => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.message);
-    } else {
-      console.log(error);
-      return "An unexpected error occurred. Please try again later.";
     }
   }
 };
@@ -79,9 +70,6 @@ export const deleteIssue = async (accessToken: string, issueKey: string) => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.message);
-    } else {
-      console.log(error);
-      return "An unexpected error occurred. Please try again later.";
     }
   }
 };

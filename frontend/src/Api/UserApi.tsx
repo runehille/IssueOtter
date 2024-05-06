@@ -21,9 +21,6 @@ export const postUser = async (accessToken: string, user: UserPost) => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.message);
-    } else {
-      console.log(error);
-      return "An unexpected error occurred. Please try again later.";
     }
   }
 };

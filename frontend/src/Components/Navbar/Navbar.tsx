@@ -51,7 +51,7 @@ const Navbar = () => {
       }
     };
     fetchProjects();
-  }, []);
+  }, [isFetchingProjects]);
 
   return (
     <div className="navbar bg-base-100 shadow">

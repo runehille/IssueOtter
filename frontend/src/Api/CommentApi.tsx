@@ -23,9 +23,6 @@ export const postComment = async (
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.message);
-    } else {
-      console.log(error);
-      return "An unexpected error occurred. Please try again later.";
     }
   }
 };
