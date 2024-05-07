@@ -9,6 +9,8 @@ import { ProjectGet } from "../../Models/Project";
 import { UserPost } from "../../Models/User";
 import { FaCaretDown } from "react-icons/fa6";
 
+const rootUrl = import.meta.env.VITE_REACT_APP_ROOTURL;
+
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const location = useLocation();
@@ -166,7 +168,7 @@ const Navbar = () => {
               <a
                 onClick={() =>
                   logout({
-                    logoutParams: { returnTo: "http://localhost:5173" },
+                    logoutParams: { returnTo: `${rootUrl}` },
                   })
                 }
               >
