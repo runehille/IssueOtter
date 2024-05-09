@@ -3,7 +3,11 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+Properties
+
 .editorconfig
+*.http
+.config
 
 # dotenv files
 .env
