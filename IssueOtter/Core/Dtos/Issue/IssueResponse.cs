@@ -7,11 +7,11 @@ namespace IssueOtter.Core.Dtos.Issue;
 public class IssueResponse
 {
   public int Id { get; set; }
-  public string Key { get; set; } = string.Empty;
+  public string Key { get; init; } = string.Empty;
   public IssueType Type { get; set; }
   public string Title { get; set; } = string.Empty;
   public string Content { get; set; } = string.Empty;
-  public string Status { get; set; } = string.Empty;
+  public IssueStatus Status { get; set; }
   public int AssigneeId { get; set; }
   public UserResponse? Assignee { get; set; }
   public string CreatedOn { get; set; } = string.Empty;

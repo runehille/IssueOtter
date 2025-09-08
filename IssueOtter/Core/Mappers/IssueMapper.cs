@@ -37,4 +37,16 @@ public static class IssueMapper
       ProjectId = createIssueRequest.ProjectId
     };
   }
+
+  public static Issue MapUpdateIssueRequestToIssueModel(this UpdateIssueRequest updateIssueRequest)
+  {
+    return new Issue
+    {
+      Title = updateIssueRequest.Title,
+      Content = updateIssueRequest.Content,
+      Type = updateIssueRequest.Type,
+      Status = updateIssueRequest.Status,
+      AssigneeId = updateIssueRequest.AssigneeId
+    };
+  }
 }

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CommentPost } from "../Models/Comment";
+import { CommentPost, CommentUpdate } from "../Models/Comment";
 import BaseApiService from "./BaseApiService";
 
 export const postComment = async (
@@ -12,6 +12,31 @@ export const postComment = async (
       {
         content: comment.comment,
         issueKey: comment.issueKey,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(error.message);
+    }
+  }
+};
+
+export const updateComment = async (
+  accessToken: string,
+  commentId: number,
+  comment: CommentUpdate
+) => {
+  try {
+    const data = await BaseApiService.put<CommentUpdate>(
+      `/comment/${commentId}`,
+      {
+        content: comment.content,
       },
       {
         headers: {

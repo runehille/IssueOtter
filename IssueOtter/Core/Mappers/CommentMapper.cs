@@ -25,4 +25,12 @@ public static class CommentMapper
       Content = createCommentRequest.Content,
     };
   }
+
+  public static Comment MapUpdateCommentRequestToComment(this UpdateCommentRequest updateCommentRequest)
+  {
+    return new Comment
+    {
+      Content = updateCommentRequest.Content,
+    };
+  }
 }

@@ -1,7 +1,7 @@
 import { Link, Outlet } from "react-router-dom";
 import { FaAngleDoubleRight, FaClipboard, FaListUl } from "react-icons/fa";
 import Breadcrumbs from "../../Components/Breadcrumbs/Breadcrumbs";
-import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
+import { useAuth } from "../../hooks/useAuth";
 import { ProjectContext } from "./Context/Context";
 import { useEffect, useState } from "react";
 import { getProjectByKey } from "../../Api/ProjectApi";
@@ -12,7 +12,7 @@ type Props = {
 };
 
 const ProjectPage = ({ projectKey }: Props) => {
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAuth();
   const [project, setProject] = useState<ProjectGet | null>(null);
 
   useEffect(() => {
@@ -85,6 +85,4 @@ const ProjectPage = ({ projectKey }: Props) => {
   );
 };
 
-const AuthenticatedProjectPage = withAuthenticationRequired(ProjectPage);
-
-export default AuthenticatedProjectPage;
+export default ProjectPage;

@@ -12,3 +12,7 @@ export type CommentPost = {
   comment: string;
   issueKey: string;
 };
+
+export type CommentUpdate = {
+  content: string;
+};

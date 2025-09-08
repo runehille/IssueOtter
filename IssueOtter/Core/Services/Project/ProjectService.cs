@@ -4,68 +4,57 @@ using IssueOtter.Core.Mappers;
 
 namespace IssueOtter.Core.Services.Project;
 
-public class ProjectService : IProjectService
+public class ProjectService(IProjectRepository projectRepository, IUserRepository userRepository)
+    : IProjectService
 {
-  private readonly IProjectRepository _projectRepository;
-  private readonly IUserRepository _userRepository;
-
-  public ProjectService(IProjectRepository projectRepository, IUserRepository userRepository)
-  {
-    _projectRepository = projectRepository;
-    _userRepository = userRepository;
-  }
-
-  public async Task<ProjectResponse?> CreateProjectAsync(CreateProjectRequest createProjectRequest, string userAuthId)
-  {
-    var projectToCreate = createProjectRequest.MapCreateProjectRequestToProject();
-
-    var user = await _userRepository.GetByAuthId(userAuthId);
-
-    if (user is not null)
+    public async Task<ProjectResponse?> CreateProjectAsync(CreateProjectRequest createProjectRequest, string userAuthId)
     {
-      projectToCreate.AdminId = user.Id;
-      projectToCreate.CreatedById = user.Id;
-    }
-    await _projectRepository.CreateAsync(projectToCreate);
+        var projectToCreate = createProjectRequest.MapCreateProjectRequestToProject();
 
-    var project = await _projectRepository.GetByIdAsync(projectToCreate.Id);
-    return project.MapProjectToProjectResponse();
+        var user = await userRepository.GetByAuthId(userAuthId);
 
-  }
+        if (user is not null)
+        {
+            projectToCreate.AdminId = user.Id;
+            projectToCreate.CreatedById = user.Id;
+        }
 
-  public async Task<ProjectResponse?> DeleteProjectByKeyAsync(string key)
-  {
+        await projectRepository.CreateAsync(projectToCreate);
 
-    var project = await _projectRepository.DeleteByKeyAsync(key);
-
-    if (project is null)
-    {
-      return null;
+        var project = await projectRepository.GetByIdAsync(projectToCreate.Id);
+        return project.MapProjectToProjectResponse();
     }
 
-    return project.MapProjectToProjectResponse();
-  }
-
-  public async Task<List<ProjectResponse>> GetAllProjectsAsync()
-  {
-    var projects = await _projectRepository.GetAllAsync();
-
-    var projectsResponse = projects.Select(x => x.MapProjectToProjectResponse()).ToList();
-
-    return projectsResponse;
-  }
-
-  public async Task<ProjectResponse?> GetProjectByKeyAsync(string key)
-  {
-    var project = await _projectRepository.GetByKeyAsync(key);
-
-    if (project is null)
+    public async Task<ProjectResponse?> DeleteProjectByKeyAsync(string key)
     {
-      return null;
+        var project = await projectRepository.DeleteByKeyAsync(key);
+
+        return project?.MapProjectToProjectResponse();
     }
 
-    var projectResponse = project.MapProjectToProjectResponse();
+    public async Task<List<ProjectResponse>> GetAllProjectsAsync()
+    {
+        var projects = await projectRepository.GetAllAsync();
 
-    return projectResponse;
-  }
+        var projectsResponse = projects.Select(x => x.MapProjectToProjectResponse()).ToList();
+
+        return projectsResponse;
+    }
+
+    public async Task<ProjectResponse?> GetProjectByKeyAsync(string key)
+    {
+        var project = await projectRepository.GetByKeyAsync(key);
+
+        var projectResponse = project.MapProjectToProjectResponse();
+
+        return projectResponse;
+    }
+
+    public async Task<ProjectResponse?> UpdateProjectAsync(string key, UpdateProjectRequest updateProjectRequest)
+    {
+        var projectToUpdate = updateProjectRequest.MapUpdateProjectRequestToProject();
+        var updatedProject = await projectRepository.UpdateAsync(key, projectToUpdate);
+
+        return updatedProject?.MapProjectToProjectResponse();
+    }
 }

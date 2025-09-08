@@ -11,7 +11,9 @@ public class CreateIssueRequest
 
   [EnumDataType(typeof(IssueType))]
   public IssueType Type { get; set; }
-  public string Status { get; set; } = string.Empty;
+  
+  [EnumDataType(typeof(IssueStatus))]
+  public IssueStatus Status { get; set; } = IssueStatus.ToDo;
   [Required]
   public int AssigneeId { get; set; }
   [Required]

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IssueGet, IssuePost } from "../Models/Issue";
+import { IssueGet, IssuePost, IssueStatusUpdate } from "../Models/Issue";
 import BaseApiService from "./BaseApiService";
 
 export const getAllIssues = async (accessToken: string, key: string) => {
@@ -44,6 +44,27 @@ export const postIssue = async (accessToken: string, issue: IssuePost) => {
         assigneeId: 1,
         createdById: 1,
         projectKey: issue.projectKey,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(error.message);
+    }
+  }
+};
+
+export const updateIssueStatus = async (accessToken: string, issueKey: string, statusUpdate: IssueStatusUpdate) => {
+  try {
+    const data = await BaseApiService.patch<IssueGet>(
+      `/issue/${issueKey}/status`,
+      {
+        status: statusUpdate.status,
       },
       {
         headers: {

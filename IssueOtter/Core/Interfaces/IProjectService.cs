@@ -7,5 +7,6 @@ public interface IProjectService
   Task<List<ProjectResponse>> GetAllProjectsAsync();
   Task<ProjectResponse?> GetProjectByKeyAsync(string key);
   Task<ProjectResponse?> CreateProjectAsync(CreateProjectRequest createProjectRequest, string userAuthId);
+  Task<ProjectResponse?> UpdateProjectAsync(string key, UpdateProjectRequest updateProjectRequest);
   Task<ProjectResponse?> DeleteProjectByKeyAsync(string key);
 }

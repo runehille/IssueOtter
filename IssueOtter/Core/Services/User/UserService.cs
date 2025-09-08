@@ -4,28 +4,33 @@ using IssueOtter.Core.Mappers;
 
 namespace IssueOtter.Core.Services.User;
 
-public class UserService : IUserService
+public class UserService(IUserRepository userRepository) : IUserService
 {
-  private readonly IUserRepository _userRepository;
-
-  public UserService(IUserRepository userRepository)
-  {
-    _userRepository = userRepository;
-  }
-
-  public async Task<UserResponse?> CreateUserAync(CreateUserRequest createUserRequest, string userAuthId)
-  {
-    var userToCreate = createUserRequest.MapCreateUserRequestToUser();
-    userToCreate.AuthId = userAuthId;
-
-    await _userRepository.CreateAsync(userToCreate);
-
-    var createdUser = await _userRepository.GetByAuthId(userAuthId);
-
-    if (createdUser is null)
+    public async Task<UserResponse?> CreateUserAsync(CreateUserRequest createUserRequest, string userAuthId)
     {
-      return null;
+        var userToCreate = createUserRequest.MapCreateUserRequestToUser();
+        userToCreate.AuthId = userAuthId;
+
+        await userRepository.CreateAsync(userToCreate);
+
+        var createdUser = await userRepository.GetByAuthId(userAuthId);
+
+        return createdUser?.MapUserToUserResponse();
     }
-    return createdUser.MapUserToUserResponse();
-  }
+
+    public async Task<UserResponse?> UpdateUserAsync(UpdateUserRequest updateUserRequest, string userAuthId)
+    {
+        var existingUser = await userRepository.GetByAuthId(userAuthId);
+        
+        if (existingUser == null)
+        {
+            return null;
+        }
+
+        updateUserRequest.MapUpdateUserRequestToUser(existingUser);
+
+        var updatedUser = await userRepository.UpdateAsync(existingUser);
+
+        return updatedUser?.MapUserToUserResponse();
+    }
 }

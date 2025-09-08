@@ -11,6 +11,8 @@ public interface IIssueRepository
   Task<Issue?> GetByKeyAsync(string key);
   Task<Issue?> CreateAsync(Issue Issue);
   Task<Issue?> UpdateAsync(int id, Issue Issue);
+  Task<Issue?> UpdateStatusAsync(int id, IssueStatus status, int updatedById);
+  Task<Issue?> UpdateStatusByKeyAsync(string key, IssueStatus status, int updatedById);
   Task<Issue?> DeleteAsync(int id);
   Task<Issue?> DeleteByKeyAsync(string key);
 }

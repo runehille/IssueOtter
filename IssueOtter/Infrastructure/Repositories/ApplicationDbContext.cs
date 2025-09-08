@@ -3,71 +3,66 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IssueOtter.Infrastructure.Repositories;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
-  public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-  {
+    public DbSet<Project> Project { get; set; }
+    public DbSet<Issue> Issue { get; set; }
+    public DbSet<Comment> Comment { get; set; }
+    public DbSet<User> User { get; set; }
 
-  }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
 
-  public DbSet<Project> Project { get; set; }
-  public DbSet<Issue> Issue { get; set; }
-  public DbSet<Comment> Comment { get; set; }
-  public DbSet<User> User { get; set; }
+        // Project
+        modelBuilder.Entity<Project>()
+            .HasMany(x => x.Issues)
+            .WithOne(p => p.Project)
+            .HasForeignKey(x => x.ProjectId);
 
-  protected override void OnModelCreating(ModelBuilder modelBuilder)
-  {
-    base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Project>()
+            .HasIndex(x => x.Key)
+            .IsUnique();
 
-    // Project
-    modelBuilder.Entity<Project>()
-    .HasMany(x => x.Issues)
-    .WithOne(p => p.Project)
-    .HasForeignKey(x => x.ProjectId);
+        // Issue
+        modelBuilder.Entity<Issue>()
+            .HasOne(x => x.CreatedBy)
+            .WithMany()
+            .HasForeignKey(x => x.CreatedById);
 
-    modelBuilder.Entity<Project>()
-    .HasIndex(x => x.Key)
-    .IsUnique();
+        modelBuilder.Entity<Issue>()
+            .HasOne(x => x.LastUpdatedBy)
+            .WithMany()
+            .HasForeignKey(x => x.LastUpdatedById);
 
-    // Issue
-    modelBuilder.Entity<Issue>()
-        .HasOne(x => x.CreatedBy)
-        .WithMany()
-        .HasForeignKey(x => x.CreatedById);
+        modelBuilder.Entity<Issue>()
+            .HasOne(x => x.Assignee)
+            .WithMany()
+            .HasForeignKey(x => x.AssigneeId);
 
-    modelBuilder.Entity<Issue>()
-        .HasOne(x => x.LastUpdatedBy)
-        .WithMany()
-        .HasForeignKey(x => x.LastUpdatedById);
+        modelBuilder.Entity<Issue>()
+            .HasOne(x => x.Project)
+            .WithMany(p => p.Issues)
+            .HasForeignKey(x => x.ProjectId);
 
-    modelBuilder.Entity<Issue>()
-        .HasOne(x => x.Assignee)
-        .WithMany()
-        .HasForeignKey(x => x.AssigneeId);
+        modelBuilder.Entity<Issue>()
+            .HasMany(x => x.Comments)
+            .WithOne(p => p.Issue)
+            .HasForeignKey(x => x.IssueId);
 
-    modelBuilder.Entity<Issue>()
-        .HasOne(x => x.Project)
-        .WithMany(p => p.Issues)
-        .HasForeignKey(x => x.ProjectId);
+        modelBuilder.Entity<Issue>()
+            .Property(e => e.Type)
+            .HasConversion<string>();
 
-    modelBuilder.Entity<Issue>()
-        .HasMany(x => x.Comments)
-        .WithOne(p => p.Issue)
-        .HasForeignKey(x => x.IssueId);
+        // Comment
+        modelBuilder.Entity<Comment>()
+            .HasOne(c => c.CreatedBy)
+            .WithMany()
+            .HasForeignKey(c => c.CreatedById);
 
-    modelBuilder.Entity<Issue>()
-        .Property(e => e.Type)
-        .HasConversion<string>();
-
-    // Comment
-    modelBuilder.Entity<Comment>()
-      .HasOne(c => c.CreatedBy)
-      .WithMany()
-      .HasForeignKey(c => c.CreatedById);
-
-    // User
-    modelBuilder.Entity<User>()
-        .HasIndex(u => u.AuthId)
-        .IsUnique();
-  }
+        // User
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.AuthId)
+            .IsUnique();
+    }
 }

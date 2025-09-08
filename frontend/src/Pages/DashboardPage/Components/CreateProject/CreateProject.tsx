@@ -2,7 +2,7 @@ import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { postProject } from "../../../../Api/ProjectApi";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth } from "../../../../hooks/useAuth";
 import { useNavigate } from "react-router";
 
 type CreateFormsInputs = {
@@ -18,7 +18,7 @@ const validation = Yup.object().shape({
 });
 
 const CreateProjectModal = () => {
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAuth();
   const navigate = useNavigate();
 
   const {

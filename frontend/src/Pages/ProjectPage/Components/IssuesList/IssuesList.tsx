@@ -1,14 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 import IssuesListSkeleton from "./IssuesListSkeleton";
 import { getAllIssues } from "../../../../Api/IssueApi";
-import { IssueGet } from "../../../../Models/Issue";
-import { useAuth0 } from "@auth0/auth0-react";
+import { IssueGet, IssueStatus } from "../../../../Models/Issue";
+import { useAuth } from "../../../../hooks/useAuth";
 import { ProjectContext } from "../../Context/Context";
 import { Link } from "react-router-dom";
 
 const IssuesList = () => {
   const projectKey = useContext(ProjectContext);
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, getAccessTokenSilently } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [issues, setIssues] = useState<IssueGet[]>([]);
 
@@ -59,11 +59,11 @@ const IssuesList = () => {
                     <td>
                       <p
                         className={`${
-                          issue.status === "To Do"
+                          issue.status === IssueStatus.ToDo
                             ? "btn"
-                            : issue.status === "In Progress"
+                            : issue.status === IssueStatus.InProgress
                             ? "btn btn-info"
-                            : issue.status === "Done"
+                            : issue.status === IssueStatus.Done
                             ? "btn btn-success"
                             : ""
                         } rounded-lg py-2 px-3 text-center font-semibold min-w-28`}

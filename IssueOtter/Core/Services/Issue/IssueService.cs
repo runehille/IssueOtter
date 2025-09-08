@@ -1,129 +1,143 @@
 using IssueOtter.Core.Dtos.Issue;
 using IssueOtter.Core.Interfaces;
 using IssueOtter.Core.Mappers;
+using IssueOtter.Core.Entities;
 
 namespace IssueOtter.Core.Services.Issue;
 
-public class IssueService : IIssueService
+public class IssueService(
+    IIssueRepository issueRepository,
+    ICommentRepository commentRepository,
+    IProjectRepository projectRepository,
+    IUserRepository userRepository)
+    : IIssueService
 {
-  private readonly IIssueRepository _issueRepository;
-  private readonly ICommentRepository _commentRepository;
-  private readonly IProjectRepository _projectRepository;
-  private readonly IUserRepository _userRepository;
-
-  public IssueService(IIssueRepository issueRepository, ICommentRepository commentRepository, IProjectRepository projectRepository, IUserRepository userRepository)
-  {
-    _issueRepository = issueRepository;
-    _commentRepository = commentRepository;
-    _projectRepository = projectRepository;
-    _userRepository = userRepository;
-  }
-
-  public async Task<IssueResponse?> CreateIssueAsync(CreateIssueRequest createIssueRequest, string userAuthId)
-  {
-    var issueToCreate = createIssueRequest.MapCreateIssueRequestToIssueModel();
-    var project = await _projectRepository.GetByKeyAsync(createIssueRequest.ProjectKey);
-    var user = await _userRepository.GetByAuthId(userAuthId);
-
-    if (user is null)
+    public async Task<IssueResponse?> CreateIssueAsync(CreateIssueRequest createIssueRequest, string userAuthId)
     {
-      return null;
+        var issueToCreate = createIssueRequest.MapCreateIssueRequestToIssueModel();
+        var project = await projectRepository.GetByKeyAsync(createIssueRequest.ProjectKey);
+        var user = await userRepository.GetByAuthId(userAuthId);
+
+        if (user is null) return null;
+
+        issueToCreate.ProjectId = project.Id;
+        issueToCreate.CreatedById = user.Id;
+        issueToCreate.AssigneeId = user.Id;
+        issueToCreate.LastUpdatedById = user.Id;
+        project.IssueCount++;
+        issueToCreate.Key = $"{project.Key}-{project.IssueCount}";
+
+        await issueRepository.CreateAsync(issueToCreate);
+        await projectRepository.UpdateIssueCountAsync(project);
+
+        var issue = await issueRepository.GetByIdAsync(issueToCreate.Id);
+
+        return issue?.MapIssueModelToIssueResponse();
     }
 
-    issueToCreate.ProjectId = project.Id;
-    issueToCreate.CreatedById = user.Id;
-    issueToCreate.AssigneeId = user.Id;
-    issueToCreate.LastUpdatedById = user.Id;
-    project.IssueCount++;
-    issueToCreate.Key = $"{project.Key}-{project.IssueCount}";
-
-    await _issueRepository.CreateAsync(issueToCreate);
-    await _projectRepository.UpdateIssueCountAsync(project);
-
-    var issue = await _issueRepository.GetByIdAsync(issueToCreate.Id);
-
-    if (issue is null)
+    public async Task<IssueResponse?> DeleteIssueByIdAsync(int id)
     {
-      return null;
+        var deletedIssue = await issueRepository.DeleteAsync(id);
+
+        return deletedIssue?.MapIssueModelToIssueResponse();
     }
 
-    return issue.MapIssueModelToIssueResponse();
-  }
-
-  public async Task<IssueResponse?> DeleteIssueByIdAsync(int id)
-  {
-    var deletedIssue = await _issueRepository.DeleteAsync(id);
-
-    if (deletedIssue is null)
+    public async Task<IssueResponse?> DeleteIssueByKeyAsync(string key)
     {
-      return null;
+        var deletedIssue = await issueRepository.DeleteByKeyAsync(key);
+
+        return deletedIssue?.MapIssueModelToIssueResponse();
     }
 
-    return deletedIssue.MapIssueModelToIssueResponse();
-  }
-
-  public async Task<IssueResponse?> DeleteIssueByKeyAsync(string key)
-  {
-    var deletedIssue = await _issueRepository.DeleteByKeyAsync(key);
-
-    if (deletedIssue is null)
+    public async Task<List<IssueResponse>> GetAllIssuesAsync()
     {
-      return null;
+        var issues = await issueRepository.GetAllAsync();
+
+        var issuesResponse = issues.Select(x => x.MapIssueModelToIssueResponse()).ToList();
+
+        return issuesResponse;
     }
 
-    return deletedIssue.MapIssueModelToIssueResponse();
-  }
-
-  public async Task<List<IssueResponse>> GetAllIssuesAsync()
-  {
-    var issues = await _issueRepository.GetAllAsync();
-
-    var issuesResponse = issues.Select(x => x.MapIssueModelToIssueResponse()).ToList();
-
-    return issuesResponse;
-  }
-
-  public async Task<IssueResponse?> GetIssueByIdAsync(int id)
-  {
-    var issue = await _issueRepository.GetByIdAsync(id);
-
-    if (issue is null)
+    public async Task<IssueResponse?> GetIssueByIdAsync(int id)
     {
-      return null;
+        var issue = await issueRepository.GetByIdAsync(id);
+
+        var issueResponse = issue?.MapIssueModelToIssueResponse();
+
+        return issueResponse;
     }
-    var issueResponse = issue.MapIssueModelToIssueResponse();
 
-    return issueResponse;
-  }
-
-  public async Task<IssueResponse?> GetIssueByKeyAsync(string key)
-  {
-    var issue = await _issueRepository.GetByKeyAsync(key);
-
-    if (issue is null)
+    public async Task<IssueResponse?> GetIssueByKeyAsync(string key)
     {
-      return null;
+        var issue = await issueRepository.GetByKeyAsync(key);
+
+        if (issue is null) return null;
+        var issueResponse = issue.MapIssueModelToIssueResponse();
+        var commentModels = await commentRepository.GetAllByIssueKeyAsync(key);
+        issueResponse.Comments = commentModels.Select(x => x.MapCommentToCommentResponse()).ToList();
+
+        return issueResponse;
     }
-    var issueResponse = issue.MapIssueModelToIssueResponse();
-    var commentModels = await _commentRepository.GetAllByIssueKeyAsync(key);
-    issueResponse.Comments = commentModels.Select(x => x.MapCommentToCommentResponse()).ToList();
 
-    return issueResponse;
-  }
+    public async Task<IssueResponse?> UpdateIssueAsync(int id, UpdateIssueRequest updateIssueRequest)
+    {
+        var issueToUpdate = updateIssueRequest.MapUpdateIssueRequestToIssueModel();
+        var updatedIssue = await issueRepository.UpdateAsync(id, issueToUpdate);
 
-  public async Task<List<IssueResponse>> GetIssuesByProjectIdAsync(int id)
-  {
-    var issues = await _issueRepository.GetAllByProjectIdAsync(id);
-    var issueResponses = issues.Select(x => x.MapIssueModelToIssueResponse()).ToList();
+        return updatedIssue?.MapIssueModelToIssueResponse();
+    }
 
-    return issueResponses;
-  }
+    public async Task<List<IssueResponse>> GetIssuesByProjectIdAsync(int id)
+    {
+        var issues = await issueRepository.GetAllByProjectIdAsync(id);
+        var issueResponses = issues.Select(x => x.MapIssueModelToIssueResponse()).ToList();
 
-  public async Task<List<IssueResponse>> GetIssuesByProjectKeyAsync(string key)
-  {
-    var issues = await _issueRepository.GetAllByProjectKeyAsync(key);
-    var issueResponses = issues.Select(x => x.MapIssueModelToIssueResponse()).ToList();
+        return issueResponses;
+    }
 
-    return issueResponses;
-  }
+    public async Task<List<IssueResponse>> GetIssuesByProjectKeyAsync(string key)
+    {
+        var issues = await issueRepository.GetAllByProjectKeyAsync(key);
+        var issueResponses = issues.Select(x => x.MapIssueModelToIssueResponse()).ToList();
+
+        return issueResponses;
+    }
+
+    public async Task<IssueResponse?> UpdateIssueStatusAsync(int id, UpdateIssueStatusRequest updateStatusRequest, string userAuthId)
+    {
+        var user = await userRepository.GetByAuthId(userAuthId);
+        if (user is null) return null;
+
+        var existingIssue = await issueRepository.GetByIdAsync(id);
+        if (existingIssue is null) return null;
+
+        if (!IssueStatusService.IsValidTransition(existingIssue.Status, updateStatusRequest.Status))
+        {
+            throw new InvalidOperationException(
+                IssueStatusService.GetStatusTransitionError(existingIssue.Status, updateStatusRequest.Status));
+        }
+
+        var updatedIssue = await issueRepository.UpdateStatusAsync(id, updateStatusRequest.Status, user.Id);
+
+        return updatedIssue?.MapIssueModelToIssueResponse();
+    }
+
+    public async Task<IssueResponse?> UpdateIssueStatusByKeyAsync(string key, UpdateIssueStatusRequest updateStatusRequest, string userAuthId)
+    {
+        var user = await userRepository.GetByAuthId(userAuthId);
+        if (user is null) return null;
+
+        var existingIssue = await issueRepository.GetByKeyAsync(key);
+        if (existingIssue is null) return null;
+
+        if (!IssueStatusService.IsValidTransition(existingIssue.Status, updateStatusRequest.Status))
+        {
+            throw new InvalidOperationException(
+                IssueStatusService.GetStatusTransitionError(existingIssue.Status, updateStatusRequest.Status));
+        }
+
+        var updatedIssue = await issueRepository.UpdateStatusByKeyAsync(key, updateStatusRequest.Status, user.Id);
+
+        return updatedIssue?.MapIssueModelToIssueResponse();
+    }
 }

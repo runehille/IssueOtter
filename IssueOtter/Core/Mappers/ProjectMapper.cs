@@ -5,23 +5,32 @@ namespace IssueOtter.Core.Mappers;
 
 public static class ProjectMapper
 {
-  public static ProjectResponse MapProjectToProjectResponse(this Project Project)
-  {
-    return new ProjectResponse
+    public static ProjectResponse MapProjectToProjectResponse(this Project project)
     {
-      Key = Project.Key,
-      Title = Project.Title,
-      Description = Project.Description,
-    };
-  }
+        return new ProjectResponse
+        {
+            Key = project.Key,
+            Title = project.Title,
+            Description = project.Description
+        };
+    }
 
-  public static Project MapCreateProjectRequestToProject(this CreateProjectRequest createProjectRequest)
-  {
-    return new Project
+    public static Project MapCreateProjectRequestToProject(this CreateProjectRequest createProjectRequest)
     {
-      Key = createProjectRequest.Key,
-      Title = createProjectRequest.Title,
-      Description = createProjectRequest.Description,
-    };
-  }
+        return new Project
+        {
+            Key = createProjectRequest.Key,
+            Title = createProjectRequest.Title,
+            Description = createProjectRequest.Description
+        };
+    }
+
+    public static Project MapUpdateProjectRequestToProject(this UpdateProjectRequest updateProjectRequest)
+    {
+        return new Project
+        {
+            Title = updateProjectRequest.Title,
+            Description = updateProjectRequest.Description
+        };
+    }
 }

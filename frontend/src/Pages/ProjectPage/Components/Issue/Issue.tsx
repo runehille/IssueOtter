@@ -1,4 +1,4 @@
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth } from "../../../../hooks/useAuth";
 import { useEffect, useState } from "react";
 import { deleteIssue, getIssueByKey } from "../../../../Api/IssueApi";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,7 @@ import { FaCaretLeft, FaEllipsis } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { postComment } from "../../../../Api/CommentApi";
+import { postComment, updateComment } from "../../../../Api/CommentApi";
 
 type Props = {
   issueKey: string;
@@ -23,9 +23,11 @@ const validation = Yup.object().shape({
 });
 
 const Issue = ({ issueKey }: Props) => {
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAuth();
   const [issue, setIssue] = useState<IssueGet | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editingCommentContent, setEditingCommentContent] = useState<string>("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -70,6 +72,26 @@ const Issue = ({ issueKey }: Props) => {
 
   const resetForm = () => {
     reset();
+  };
+
+  const handleEditClick = (commentId: number, currentContent: string) => {
+    setEditingCommentId(commentId);
+    setEditingCommentContent(currentContent);
+  };
+
+  const handleEditCancel = () => {
+    setEditingCommentId(null);
+    setEditingCommentContent("");
+  };
+
+  const handleEditSave = async (commentId: number) => {
+    const token = await getAccessTokenSilently();
+    await updateComment(token, commentId, {
+      content: editingCommentContent,
+    });
+    setEditingCommentId(null);
+    setEditingCommentContent("");
+    setIsLoading(true);
   };
 
   return (
@@ -195,12 +217,47 @@ const Issue = ({ issueKey }: Props) => {
                   </time>
                 </div>
                 <div className="flex space-x-6 items-end">
-                  <div className="chat-bubble chat-bubble-primary">
-                    {comment.content}
-                  </div>
-                  <button className="btn btn-error btn-xs btn-disabled">
-                    Delete
-                  </button>
+                  {editingCommentId === comment.id ? (
+                    <div className="flex flex-col space-y-2">
+                      <textarea
+                        value={editingCommentContent}
+                        onChange={(e) => setEditingCommentContent(e.target.value)}
+                        className="textarea textarea-bordered textarea-sm w-full max-w-xs"
+                        rows={3}
+                      />
+                      <div className="flex space-x-2">
+                        <button
+                          className="btn btn-success btn-xs"
+                          onClick={() => handleEditSave(comment.id)}
+                        >
+                          Save
+                        </button>
+                        <button
+                          className="btn btn-outline btn-xs"
+                          onClick={handleEditCancel}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="chat-bubble chat-bubble-primary">
+                        {comment.content}
+                      </div>
+                      <div className="flex space-x-2">
+                        <button
+                          className="btn btn-outline btn-xs"
+                          onClick={() => handleEditClick(comment.id, comment.content)}
+                        >
+                          Edit
+                        </button>
+                        <button className="btn btn-error btn-xs btn-disabled">
+                          Delete
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             ))}

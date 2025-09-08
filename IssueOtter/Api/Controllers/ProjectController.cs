@@ -9,67 +9,60 @@ namespace IssueOtter.Api.Controllers;
 [ApiController]
 [Route("api/project")]
 [Authorize]
-public class ProjectController : ControllerBase
+public class ProjectController(IProjectService projectService) : ControllerBase
 {
-  private readonly IProjectService _projectService;
-
-  public ProjectController(IProjectService projectService)
-  {
-    _projectService = projectService;
-  }
-
-  [HttpGet]
-  public async Task<IActionResult> GetAll()
-  {
-    var result = await _projectService.GetAllProjectsAsync();
-
-    return Ok(result);
-  }
-
-  [HttpGet("{key:alpha}", Name = "GetByKey")]
-  public async Task<IActionResult> GetByKey([FromRoute] string key)
-  {
-    var project = await _projectService.GetProjectByKeyAsync(key);
-
-    if (project is null)
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
     {
-      return BadRequest("Project not found");
+        var result = await projectService.GetAllProjectsAsync();
+
+        return Ok(result);
     }
 
-    return Ok(project);
-  }
-
-  [HttpPost]
-  public async Task<IActionResult> Create([FromBody] CreateProjectRequest createProjectRequest)
-  {
-
-    var userAuthId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-    if (userAuthId is null)
+    [HttpGet("{key}", Name = "GetByKey")]
+    public async Task<IActionResult> GetByKey([FromRoute] string key)
     {
-      return BadRequest("User not found");
+        var project = await projectService.GetProjectByKeyAsync(key);
+
+        if (project is null) return BadRequest("Project not found");
+
+        return Ok(project);
     }
 
-    var project = await _projectService.CreateProjectAsync(createProjectRequest, userAuthId);
-
-    if (project is null)
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateProjectRequest createProjectRequest)
     {
-      return StatusCode(500, "Server error when creating project.");
+        var userAuthId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userAuthId is null) return BadRequest("User not found");
+
+        var project = await projectService.CreateProjectAsync(createProjectRequest, userAuthId);
+
+        if (project is null) return StatusCode(500, "Server error when creating project.");
+
+        return CreatedAtAction(nameof(GetByKey), new { key = project.Key }, project);
     }
 
-    return CreatedAtAction(nameof(GetByKey), new { key = project.Key }, project);
-  }
-
-  [HttpDelete("{key}")]
-  public async Task<IActionResult> DeleteByKey([FromRoute] string key)
-  {
-    var project = await _projectService.DeleteProjectByKeyAsync(key);
-
-    if (project is null)
+    [HttpPut("{key}")]
+    public async Task<IActionResult> Update([FromRoute] string key, [FromBody] UpdateProjectRequest updateProjectRequest)
     {
-      return NotFound("Project not found. Could not delete");
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var updatedProject = await projectService.UpdateProjectAsync(key, updateProjectRequest);
+
+        if (updatedProject is null) return NotFound($"Project with key {key} not found");
+
+        return Ok(updatedProject);
     }
 
-    return NoContent();
-  }
+    [HttpDelete("{key}")]
+    public async Task<IActionResult> DeleteByKey([FromRoute] string key)
+    {
+        var project = await projectService.DeleteProjectByKeyAsync(key);
+
+        if (project is null) return NotFound("Project not found. Could not delete");
+
+        return NoContent();
+    }
 }

@@ -3,7 +3,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { ProjectGet } from "../../../../Models/Project";
 import { postIssue } from "../../../../Api/IssueApi";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth } from "../../../../hooks/useAuth";
+import { IssueStatus, IssueType } from "../../../../Models/Issue";
 
 type Props = {
   projects: ProjectGet[];
@@ -13,8 +14,8 @@ type CreateFormsInputs = {
   projectKey: string;
   title: string;
   content: string;
-  status: string;
-  type: string;
+  status: IssueStatus;
+  type: IssueType;
 };
 
 const validation = Yup.object().shape({
@@ -23,12 +24,12 @@ const validation = Yup.object().shape({
     .required("Project is required"),
   title: Yup.string().required("Title is required"),
   content: Yup.string(),
-  status: Yup.string(),
-  type: Yup.string(),
+  status: Yup.number(),
+  type: Yup.number(),
 });
 
 const CreateIssueModal = ({ projects }: Props) => {
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAuth();
 
   const {
     register,

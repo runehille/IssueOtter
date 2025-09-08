@@ -7,31 +7,32 @@ namespace IssueOtter.Api.Controllers;
 
 [ApiController]
 [Route("api/user")]
-public class UserController : ControllerBase
+public class UserController(IUserService userService) : ControllerBase
 {
-  private readonly IUserService _userService;
-
-  public UserController(IUserService userService)
-  {
-    _userService = userService;
-  }
-
-  [HttpPost]
-  public async Task<IActionResult> Create([FromBody] CreateUserRequest createUserRequest)
-  {
-    var userAuthId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-    if (userAuthId is null)
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateUserRequest createUserRequest)
     {
-      return BadRequest("Access token error. Could not create user.");
-    }
-    var createdUser = await _userService.CreateUserAync(createUserRequest, userAuthId);
+        var userAuthId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-    if (createdUser is null)
-    {
-      return StatusCode(500, "Something went wrong, could not create user.");
+        if (userAuthId is null) return BadRequest("Access token error. Could not create user.");
+        var createdUser = await userService.CreateUserAsync(createUserRequest, userAuthId);
+
+        if (createdUser is null) return StatusCode(500, "Something went wrong, could not create user.");
+
+        return Created();
     }
 
-    return Created();
-  }
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] UpdateUserRequest updateUserRequest)
+    {
+        var userAuthId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userAuthId is null) return BadRequest("Access token error. Could not update user.");
+        
+        var updatedUser = await userService.UpdateUserAsync(updateUserRequest, userAuthId);
+
+        if (updatedUser is null) return NotFound("User not found or could not be updated.");
+
+        return Ok(updatedUser);
+    }
 }

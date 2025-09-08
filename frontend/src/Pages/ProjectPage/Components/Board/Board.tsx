@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import BoardSkeleton from "./BoardSkeleton";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth } from "../../../../hooks/useAuth";
 import { getAllIssues } from "../../../../Api/IssueApi";
+import { IssueStatus } from "../../../../Models/Issue";
 import { ProjectContext } from "../../Context/Context";
 import { IssueGet } from "../../../../Models/Issue";
 
@@ -9,7 +10,7 @@ const Board = () => {
   const projectKey = useContext(ProjectContext);
   const [isLoading, setIsLoading] = useState(false);
   const [issues, setIssues] = useState<IssueGet[]>([]);
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAuth();
 
   useEffect(() => {
     const fetchIssues = async () => {
@@ -33,7 +34,7 @@ const Board = () => {
             <div className="bg-base-300 m-2 p-2 rounded-xl min-w-80">
               <p className="font-bold text-xl text-center m-2">To Do</p>
               {issues
-                .filter((issue) => issue.status === "To Do")
+                .filter((issue) => issue.status === IssueStatus.ToDo)
                 .map((issue) => (
                   <div
                     key={issue.key}
@@ -50,7 +51,7 @@ const Board = () => {
             <div className="bg-base-300 m-2 p-2 rounded-xl min-w-80">
               <p className="font-bold text-xl text-center m-2">In Progress</p>
               {issues
-                .filter((issue) => issue.status === "In Progress")
+                .filter((issue) => issue.status === IssueStatus.InProgress)
                 .map((issue) => (
                   <div
                     key={issue.key}
@@ -67,7 +68,7 @@ const Board = () => {
             <div className="bg-base-300 m-2 p-2 rounded-xl min-w-80">
               <p className="font-bold text-xl text-center m-2">Done</p>
               {issues
-                .filter((issue) => issue.status === "Done")
+                .filter((issue) => issue.status === IssueStatus.Done)
                 .map((issue) => (
                   <div
                     key={issue.key}

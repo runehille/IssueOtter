@@ -1,12 +1,12 @@
 import { useContext } from "react";
 import { deleteProject } from "../../../../Api/ProjectApi";
 import { ProjectContext } from "../../Context/Context";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth } from "../../../../hooks/useAuth";
 import { useNavigate } from "react-router";
 
 const Settings = () => {
   const projectKey = useContext(ProjectContext);
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAuth();
   const navigate = useNavigate();
 
   const handleDelete = async () => {

@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import CreateIssueModal from "./Components/CreateIssueModal/CreateIssueModal";
 import { useEffect, useLayoutEffect, useState } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth } from "../../hooks/useAuth";
 import { FaBell } from "react-icons/fa6";
 import { getAllProjects } from "../../Api/ProjectApi";
 import { postUser } from "../../Api/UserApi";
@@ -10,12 +10,14 @@ import { UserPost } from "../../Models/User";
 import { FaCaretDown } from "react-icons/fa6";
 
 const rootUrl = import.meta.env.VITE_REACT_APP_ROOTURL;
+const isDevMode = import.meta.env.VITE_REACT_APP_DEV_MODE === 'true';
+const skipAuth = import.meta.env.VITE_REACT_APP_SKIP_AUTH === 'true';
 
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const location = useLocation();
   const paths = location.pathname.split("/").filter((path) => path !== "");
-  const { logout, user, getAccessTokenSilently } = useAuth0();
+  const { logout, user, getAccessTokenSilently } = useAuth();
   const [projects, setProjects] = useState<ProjectGet[]>([]);
   const [isFetchingProjects, setIsFetchingProjects] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(
@@ -59,7 +61,7 @@ const Navbar = () => {
     <div className="navbar bg-base-100 shadow">
       <div className="flex-1 md:space-x-5">
         <Link
-          to="/app/dashboard"
+          to={isDevMode && skipAuth ? "/dashboard" : "/app/dashboard"}
           className="btn btn-ghost md:mb-2 hover:bg-transparent"
         >
           <img
@@ -91,7 +93,7 @@ const Navbar = () => {
               {projects.map((project) => (
                 <li key={project.key}>
                   <Link
-                    to={`/app/project/${project.key}`}
+                    to={`${isDevMode && skipAuth ? '' : '/app'}/project/${project.key}`}
                     onClick={() => setDropdownOpen(false)}
                   >
                     {project.title} ({project.key})
@@ -101,7 +103,7 @@ const Navbar = () => {
               <hr />
               <li className="font-semibold mt-1">
                 <Link
-                  to="/app/dashboard/create-project"
+                  to={`${isDevMode && skipAuth ? '' : '/app'}/dashboard/create-project`}
                   onClick={() => setDropdownOpen(false)}
                 >
                   Create new project

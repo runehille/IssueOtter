@@ -19,9 +19,17 @@ public static class UserMapper
   {
     return new UserResponse
     {
+      Id = User.Id,
       Email = User.Email,
       FirstName = User.FirstName,
       LastName = User.LastName
     };
+  }
+
+  public static void MapUpdateUserRequestToUser(this UpdateUserRequest updateUserRequest, User user)
+  {
+    user.Email = updateUserRequest.Email;
+    user.FirstName = updateUserRequest.FirstName;
+    user.LastName = updateUserRequest.LastName;
   }
 }

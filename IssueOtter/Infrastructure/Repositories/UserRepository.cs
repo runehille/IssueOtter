@@ -6,36 +6,50 @@ namespace IssueOtter.Infrastructure.Repositories;
 
 public class UserRepository : IUserRepository
 {
-  private readonly ApplicationDbContext _context;
+    private readonly ApplicationDbContext _context;
 
-  public UserRepository(ApplicationDbContext context)
-  {
-    _context = context;
-  }
-
-  public async Task<User> CreateAsync(User User)
-  {
-
-    try
+    public UserRepository(ApplicationDbContext context)
     {
-      await _context.User.AddAsync(User);
-      await _context.SaveChangesAsync();
-    }
-    catch (DbUpdateException ex)
-    {
-      // TODO Handle exception.
+        _context = context;
     }
 
-    return User;
-  }
+    public async Task<User> CreateAsync(User user)
+    {
+        try
+        {
+            await _context.User.AddAsync(user);
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException)
+        {
+            // TODO Handle exception.
+        }
 
-  public async Task<bool> Exists(string authId)
-  {
-    return await _context.User.AnyAsync(u => u.AuthId == authId);
-  }
+        return user;
+    }
 
-  public async Task<User?> GetByAuthId(string authId)
-  {
-    return await _context.User.FirstOrDefaultAsync(x => x.AuthId == authId);
-  }
+    public async Task<bool> Exists(string authId)
+    {
+        return await _context.User.AnyAsync(u => u.AuthId == authId);
+    }
+
+    public async Task<User?> GetByAuthId(string authId)
+    {
+        return await _context.User.FirstOrDefaultAsync(x => x.AuthId == authId);
+    }
+
+    public async Task<User?> UpdateAsync(User user)
+    {
+        try
+        {
+            _context.User.Update(user);
+            await _context.SaveChangesAsync();
+            return user;
+        }
+        catch (DbUpdateException)
+        {
+            // TODO Handle exception.
+            return null;
+        }
+    }
 }
