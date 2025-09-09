@@ -22,7 +22,7 @@ public class ProjectService(IProjectRepository projectRepository, IUserRepositor
         await projectRepository.CreateAsync(projectToCreate);
 
         var project = await projectRepository.GetByIdAsync(projectToCreate.Id);
-        return project.MapProjectToProjectResponse();
+        return project?.MapProjectToProjectResponse();
     }
 
     public async Task<ProjectResponse?> DeleteProjectByKeyAsync(string key)
@@ -45,9 +45,7 @@ public class ProjectService(IProjectRepository projectRepository, IUserRepositor
     {
         var project = await projectRepository.GetByKeyAsync(key);
 
-        var projectResponse = project.MapProjectToProjectResponse();
-
-        return projectResponse;
+        return project?.MapProjectToProjectResponse();
     }
 
     public async Task<ProjectResponse?> UpdateProjectAsync(string key, UpdateProjectRequest updateProjectRequest)

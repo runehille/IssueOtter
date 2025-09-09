@@ -17,6 +17,14 @@ public enum IssueStatus
     Closed
 }
 
+public enum IssuePriority
+{
+    Low,
+    Medium,
+    High,
+    Critical
+}
+
 public class Issue
 {
     public int Id { get; init; }
@@ -31,6 +39,8 @@ public class Issue
 
     public IssueStatus Status { get; set; } = IssueStatus.ToDo;
 
+    public IssuePriority Priority { get; set; } = IssuePriority.Medium;
+
     public int? AssigneeId { get; set; }
     public User? Assignee { get; set; }
     public DateTime CreatedOn { get; init; } = DateTime.Now;
@@ -42,5 +52,9 @@ public class Issue
     public int? ProjectId { get; set; }
     public Project? Project { get; set; }
     public List<Comment> Comments { get; set; } = [];
+
+    // Many-to-many relationship with Labels
+    public List<Label> Labels { get; set; } = [];
+
     public bool IsDeleted { get; set; }
 }

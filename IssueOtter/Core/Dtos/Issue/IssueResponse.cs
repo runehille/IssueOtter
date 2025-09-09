@@ -1,4 +1,5 @@
 using IssueOtter.Core.Dtos.Comment;
+using IssueOtter.Core.Dtos.Label;
 using IssueOtter.Core.Dtos.User;
 using IssueOtter.Core.Entities;
 
@@ -12,6 +13,7 @@ public class IssueResponse
   public string Title { get; set; } = string.Empty;
   public string Content { get; set; } = string.Empty;
   public IssueStatus Status { get; set; }
+  public IssuePriority Priority { get; set; }
   public int AssigneeId { get; set; }
   public UserResponse? Assignee { get; set; }
   public string CreatedOn { get; set; } = string.Empty;
@@ -20,6 +22,7 @@ public class IssueResponse
   public string LastUpdatedOn { get; set; } = string.Empty;
   public int ProjectId { get; set; }
   public List<CommentResponse> Comments { get; set; } = [];
+  public List<LabelResponse> Labels { get; set; } = [];
 
   // TODO Remove IsDeleted
   public bool IsDeleted { get; set; }

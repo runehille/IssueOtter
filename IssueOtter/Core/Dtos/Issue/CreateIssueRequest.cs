@@ -14,6 +14,9 @@ public class CreateIssueRequest
   
   [EnumDataType(typeof(IssueStatus))]
   public IssueStatus Status { get; set; } = IssueStatus.ToDo;
+  
+  [EnumDataType(typeof(IssuePriority))]
+  public IssuePriority Priority { get; set; } = IssuePriority.Medium;
   [Required]
   public int AssigneeId { get; set; }
   [Required]
@@ -22,4 +25,5 @@ public class CreateIssueRequest
   public int ProjectId { get; set; }
   [Required]
   public string ProjectKey { get; set; } = string.Empty;
+  public List<int> LabelIds { get; set; } = new List<int>();
 }

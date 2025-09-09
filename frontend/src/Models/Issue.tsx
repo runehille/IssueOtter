@@ -11,13 +11,22 @@ export enum IssueType {
   Bug = 1
 }
 
+export enum IssuePriority {
+  Low = 0,
+  Medium = 1,
+  High = 2,
+  Critical = 3
+}
+
 export type IssueGet = {
+  id: number;
   title: string;
   key: string;
   status: IssueStatus;
   type: IssueType;
+  priority: IssuePriority;
   content: string;
-  assignee: {
+  assignee?: {
     email: string;
     firstName: string;
     lastName: string;
@@ -25,7 +34,7 @@ export type IssueGet = {
   assigneeId: number;
   reporter: string;
   project: string;
-  createdBy: {
+  createdBy?: {
     email: string;
     firstname: string;
     lastname: string;
@@ -33,6 +42,7 @@ export type IssueGet = {
   createdOn: string;
   lastUpdatedOn: string;
   comments: Comment[];
+  labels: Label[];
 };
 
 export type IssuePost = {
@@ -41,10 +51,21 @@ export type IssuePost = {
   content: string;
   status: IssueStatus;
   type: IssueType;
+  priority: IssuePriority;
+  labelIds?: number[];
 };
 
 export type IssueStatusUpdate = {
   status: IssueStatus;
+};
+
+export type IssueUpdate = {
+  title: string;
+  content: string;
+  type: IssueType;
+  status: IssueStatus;
+  priority: IssuePriority;
+  assigneeId: number;
 };
 
 export type Comment = {
@@ -58,4 +79,13 @@ export type Comment = {
     lastName: string;
   };
   issueId: number;
+};
+
+export type Label = {
+  id: number;
+  name: string;
+  color: string;
+  description: string;
+  projectId: number;
+  createdOn: string;
 };

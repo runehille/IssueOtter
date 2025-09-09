@@ -3,6 +3,7 @@ using IssueOtter.Api.Auth;
 using IssueOtter.Core.Interfaces;
 using IssueOtter.Core.Services.Comment;
 using IssueOtter.Core.Services.Issue;
+using IssueOtter.Core.Services.Label;
 using IssueOtter.Core.Services.Project;
 using IssueOtter.Core.Services.User;
 using IssueOtter.Infrastructure.Repositories;
@@ -70,7 +71,7 @@ if (builder.Environment.IsDevelopment())
     builder.Services.AddDbContext<ApplicationDbContext>(options => { options.UseInMemoryDatabase("IssueOtterDev"); });
 
     // Register seeding service for development
-    builder.Services.AddScoped<DataSeedingService>();
+    builder.Services.AddScoped<ServiceLevelDataSeedingService>();
 }
 else
 {
@@ -86,11 +87,13 @@ builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IIssueRepository, IssueRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ILabelRepository, LabelRepository>();
 
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IIssueService, IssueService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ILabelService, LabelService>();
 
 var app = builder.Build();
 
@@ -98,7 +101,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
-    var seedingService = scope.ServiceProvider.GetRequiredService<DataSeedingService>();
+    var seedingService = scope.ServiceProvider.GetRequiredService<ServiceLevelDataSeedingService>();
     await seedingService.SeedDataAsync();
 }
 

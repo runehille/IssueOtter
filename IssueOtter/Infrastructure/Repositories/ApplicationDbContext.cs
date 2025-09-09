@@ -9,6 +9,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Issue> Issue { get; set; }
     public DbSet<Comment> Comment { get; set; }
     public DbSet<User> User { get; set; }
+    public DbSet<Label> Label { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -64,5 +65,21 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<User>()
             .HasIndex(u => u.AuthId)
             .IsUnique();
+
+        // Label
+        modelBuilder.Entity<Label>()
+            .HasOne(l => l.Project)
+            .WithMany()
+            .HasForeignKey(l => l.ProjectId);
+
+        modelBuilder.Entity<Label>()
+            .HasOne(l => l.CreatedBy)
+            .WithMany()
+            .HasForeignKey(l => l.CreatedById);
+
+        // Many-to-many relationship between Issue and Label
+        modelBuilder.Entity<Issue>()
+            .HasMany(i => i.Labels)
+            .WithMany(l => l.Issues);
     }
 }

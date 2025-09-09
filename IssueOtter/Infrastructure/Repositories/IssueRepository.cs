@@ -55,14 +55,19 @@ public class IssueRepository : IIssueRepository
 
     public async Task<List<Issue>> GetAllAsync()
     {
-        var issues = await _context.Issue.ToListAsync();
+        var issues = await _context.Issue
+            .Include(x => x.Labels)
+            .ToListAsync();
 
         return issues;
     }
 
     public async Task<List<Issue>> GetAllByProjectIdAsync(int id)
     {
-        var issues = await _context.Issue.Where(x => x.ProjectId == id).ToListAsync();
+        var issues = await _context.Issue
+            .Include(x => x.Labels)
+            .Where(x => x.ProjectId == id)
+            .ToListAsync();
 
         return issues;
     }
@@ -73,21 +78,30 @@ public class IssueRepository : IIssueRepository
 
         if (project is null) return new List<Issue>();
 
-        var issues = await _context.Issue.Include(x => x.Assignee).Where(x => x.ProjectId == project.Id).ToListAsync();
+        var issues = await _context.Issue
+            .Include(x => x.Assignee)
+            .Include(x => x.Labels)
+            .Where(x => x.ProjectId == project.Id)
+            .ToListAsync();
 
         return issues;
     }
 
     public async Task<Issue?> GetByIdAsync(int id)
     {
-        var issue = await _context.Issue.FirstOrDefaultAsync(x => x.Id == id);
+        var issue = await _context.Issue
+            .Include(x => x.Labels)
+            .FirstOrDefaultAsync(x => x.Id == id);
 
         return issue;
     }
 
     public async Task<Issue?> GetByKeyAsync(string key)
     {
-        var issue = await _context.Issue.Include(x => x.Assignee).Include(x => x.Comments)
+        var issue = await _context.Issue
+            .Include(x => x.Assignee)
+            .Include(x => x.Comments)
+            .Include(x => x.Labels)
             .FirstOrDefaultAsync(x => x.Key == key);
 
         return issue;
@@ -104,6 +118,7 @@ public class IssueRepository : IIssueRepository
             existingIssue.Content = issue.Content;
             existingIssue.Type = issue.Type;
             existingIssue.Status = issue.Status;
+            existingIssue.Priority = issue.Priority;
             existingIssue.AssigneeId = issue.AssigneeId;
             existingIssue.LastUpdatedOn = DateTime.UtcNow;
 

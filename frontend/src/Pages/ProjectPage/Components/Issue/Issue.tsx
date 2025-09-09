@@ -1,14 +1,15 @@
 import { useAuth } from "../../../../hooks/useAuth";
 import { useEffect, useState } from "react";
-import { deleteIssue, getIssueByKey } from "../../../../Api/IssueApi";
+import { deleteIssue, getIssueByKey, updateIssue } from "../../../../Api/IssueApi";
 import { useNavigate } from "react-router-dom";
 import IssueSkeleton from "./IssueSkeleton";
-import { IssueGet } from "../../../../Models/Issue";
+import { IssueGet, IssueType, IssueStatus, IssuePriority } from "../../../../Models/Issue";
 import { FaCaretLeft, FaEllipsis } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { postComment, updateComment } from "../../../../Api/CommentApi";
+import { postComment, updateComment, deleteComment } from "../../../../Api/CommentApi";
+import LabelBadge from "../../../../Components/Label/LabelBadge";
 
 type Props = {
   issueKey: string;
@@ -18,8 +19,26 @@ type CreateFormsInputs = {
   comment: string;
 };
 
+type EditIssueInputs = {
+  title: string;
+  content: string;
+  type: IssueType;
+  status: IssueStatus;
+  priority: IssuePriority;
+  assigneeId: number;
+};
+
 const validation = Yup.object().shape({
   comment: Yup.string().required("Comment is required."),
+});
+
+const editValidation = Yup.object().shape({
+  title: Yup.string().required("Title is required."),
+  content: Yup.string(),
+  type: Yup.number().required(),
+  status: Yup.number().required(),
+  priority: Yup.number().required(),
+  assigneeId: Yup.number().required(),
 });
 
 const Issue = ({ issueKey }: Props) => {
@@ -60,6 +79,15 @@ const Issue = ({ issueKey }: Props) => {
     resolver: yupResolver(validation) as never,
   });
 
+  const {
+    register: registerEdit,
+    handleSubmit: handleSubmitEdit,
+    setValue,
+    formState: { errors: editErrors },
+  } = useForm<EditIssueInputs>({
+    resolver: yupResolver(editValidation) as never,
+  });
+
   const handleFormSubmit = async (form: CreateFormsInputs) => {
     const token = await getAccessTokenSilently();
     await postComment(token, {
@@ -94,6 +122,42 @@ const Issue = ({ issueKey }: Props) => {
     setIsLoading(true);
   };
 
+  const handleEditIssue = () => {
+    if (issue) {
+      setValue("title", issue.title);
+      setValue("content", issue.content);
+      setValue("type", issue.type);
+      setValue("status", issue.status);
+      setValue("priority", issue.priority);
+      setValue("assigneeId", issue.assigneeId || 1); // Default to user ID 1 if null
+      (document.getElementById("edit_issue_modal") as HTMLDialogElement)!.showModal();
+    }
+  };
+
+  const handleEditSubmit = async (form: EditIssueInputs) => {
+    if (issue) {
+      const token = await getAccessTokenSilently();
+      await updateIssue(token, issue.id, {
+        title: form.title,
+        content: form.content,
+        type: form.type,
+        status: form.status,
+        priority: form.priority,
+        assigneeId: form.assigneeId,
+      });
+      (document.getElementById("edit_issue_modal") as HTMLDialogElement)!.close();
+      setIsLoading(true);
+    }
+  };
+
+  const handleDeleteComment = async (commentId: number) => {
+    if (window.confirm("Are you sure you want to delete this comment?")) {
+      const token = await getAccessTokenSilently();
+      await deleteComment(token, commentId);
+      setIsLoading(true);
+    }
+  };
+
   return (
     <>
       {isLoading ? (
@@ -111,6 +175,13 @@ const Issue = ({ issueKey }: Props) => {
                 <h3 className="text-3xl font-semibold tracking-wider">
                   {issue?.title}
                 </h3>
+                {issue?.labels && issue.labels.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {issue.labels.map((label) => (
+                      <LabelBadge key={label.id} label={label} size="md" />
+                    ))}
+                  </div>
+                )}
               </div>
               <div className="mt-6">{issue?.content}</div>
             </div>
@@ -124,15 +195,25 @@ const Issue = ({ issueKey }: Props) => {
                   tabIndex={0}
                   className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
                 >
-                  <li
-                    className="btn btn-error"
-                    onClick={() =>
-                      (document.getElementById(
-                        "delete_issue_modal"
-                      ) as HTMLDialogElement)!.showModal()
-                    }
-                  >
-                    Delete
+                  <li>
+                    <button
+                      className="btn btn-primary"
+                      onClick={handleEditIssue}
+                    >
+                      Edit
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="btn btn-error"
+                      onClick={() =>
+                        (document.getElementById(
+                          "delete_issue_modal"
+                        ) as HTMLDialogElement)!.showModal()
+                      }
+                    >
+                      Delete
+                    </button>
                   </li>
                 </ul>
               </div>
@@ -145,13 +226,13 @@ const Issue = ({ issueKey }: Props) => {
                     <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                       <dt className="text-sm">Assignee</dt>
                       <dd className="mt-1 text-sm  sm:col-span-2 sm:mt-0">
-                        {issue?.assignee.email}
+                        {issue?.assignee?.email || 'Unassigned'}
                       </dd>
                     </div>
                     <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                       <dt className="text-sm">Reporter</dt>
                       <dd className="mt-1 text-sm  sm:col-span-2 sm:mt-0">
-                        {issue?.createdBy.email}
+                        {issue?.createdBy?.email || 'Unknown'}
                       </dd>
                     </div>
                     <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -164,6 +245,22 @@ const Issue = ({ issueKey }: Props) => {
                       <dt className="text-sm font-medium">Status</dt>
                       <dd className="mt-1 text-sm col-span-2 sm:mt-0">
                         {issue?.status}
+                      </dd>
+                    </div>
+                    <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                      <dt className="text-sm font-medium">Priority</dt>
+                      <dd className="mt-1 text-sm col-span-2 sm:mt-0">
+                        <span className={`badge ${
+                          issue?.priority === IssuePriority.Low ? "badge-ghost" :
+                          issue?.priority === IssuePriority.Medium ? "badge-info" :
+                          issue?.priority === IssuePriority.High ? "badge-warning" :
+                          issue?.priority === IssuePriority.Critical ? "badge-error" : ""
+                        }`}>
+                          {issue?.priority === IssuePriority.Low ? "Low" :
+                           issue?.priority === IssuePriority.Medium ? "Medium" :
+                           issue?.priority === IssuePriority.High ? "High" :
+                           issue?.priority === IssuePriority.Critical ? "Critical" : ""}
+                        </span>
                       </dd>
                     </div>
                   </dl>
@@ -206,7 +303,7 @@ const Issue = ({ issueKey }: Props) => {
                   <div className="w-10 rounded-full">
                     <img
                       alt="Tailwind CSS chat bubble component"
-                      src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                      src="https://picsum.photos/200"
                     />
                   </div>
                 </div>
@@ -252,7 +349,10 @@ const Issue = ({ issueKey }: Props) => {
                         >
                           Edit
                         </button>
-                        <button className="btn btn-error btn-xs btn-disabled">
+                        <button 
+                          className="btn btn-error btn-xs"
+                          onClick={() => handleDeleteComment(comment.id)}
+                        >
                           Delete
                         </button>
                       </div>
@@ -262,6 +362,103 @@ const Issue = ({ issueKey }: Props) => {
               </div>
             ))}
           </div>
+
+          <dialog id="edit_issue_modal" className="modal px-20 md:px-0">
+            <div className="modal-box max-w-2xl">
+              <form method="dialog">
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                  X
+                </button>
+              </form>
+              <div className="w-full">
+                <div className="p-6 space-y-4">
+                  <h1 className="text-xl font-bold">Edit Issue</h1>
+                  <form onSubmit={handleSubmitEdit(handleEditSubmit)} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Title</label>
+                      <input
+                        {...registerEdit("title")}
+                        type="text"
+                        className="input input-bordered w-full"
+                      />
+                      {editErrors.title && (
+                        <p className="text-red-600 text-sm">{editErrors.title.message}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Content</label>
+                      <textarea
+                        {...registerEdit("content")}
+                        className="textarea textarea-bordered w-full h-32"
+                      />
+                      {editErrors.content && (
+                        <p className="text-red-600 text-sm">{editErrors.content.message}</p>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Type</label>
+                        <select {...registerEdit("type")} className="select select-bordered w-full">
+                          <option value={IssueType.Task}>Task</option>
+                          <option value={IssueType.Bug}>Bug</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Status</label>
+                        <select {...registerEdit("status")} className="select select-bordered w-full">
+                          <option value={IssueStatus.ToDo}>To Do</option>
+                          <option value={IssueStatus.InProgress}>In Progress</option>
+                          <option value={IssueStatus.InReview}>In Review</option>
+                          <option value={IssueStatus.Done}>Done</option>
+                          <option value={IssueStatus.Closed}>Closed</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Priority</label>
+                        <select {...registerEdit("priority")} className="select select-bordered w-full">
+                          <option value={IssuePriority.Low}>Low</option>
+                          <option value={IssuePriority.Medium}>Medium</option>
+                          <option value={IssuePriority.High}>High</option>
+                          <option value={IssuePriority.Critical}>Critical</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Assignee ID</label>
+                        <input
+                          {...registerEdit("assigneeId")}
+                          type="number"
+                          className="input input-bordered w-full"
+                        />
+                        {editErrors.assigneeId && (
+                          <p className="text-red-600 text-sm">{editErrors.assigneeId.message}</p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex space-x-2">
+                      <button type="submit" className="btn btn-primary">
+                        Save Changes
+                      </button>
+                      <button 
+                        type="button" 
+                        className="btn" 
+                        onClick={() => (document.getElementById("edit_issue_modal") as HTMLDialogElement)!.close()}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </dialog>
 
           <dialog id="delete_issue_modal" className="modal px-20 md:px-0">
             <div className="modal-box">

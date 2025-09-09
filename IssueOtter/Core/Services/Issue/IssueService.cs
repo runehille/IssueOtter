@@ -9,7 +9,8 @@ public class IssueService(
     IIssueRepository issueRepository,
     ICommentRepository commentRepository,
     IProjectRepository projectRepository,
-    IUserRepository userRepository)
+    IUserRepository userRepository,
+    ILabelRepository labelRepository)
     : IIssueService
 {
     public async Task<IssueResponse?> CreateIssueAsync(CreateIssueRequest createIssueRequest, string userAuthId)
@@ -26,6 +27,13 @@ public class IssueService(
         issueToCreate.LastUpdatedById = user.Id;
         project.IssueCount++;
         issueToCreate.Key = $"{project.Key}-{project.IssueCount}";
+
+        // Handle labels if provided
+        if (createIssueRequest.LabelIds?.Any() == true)
+        {
+            var labels = await labelRepository.GetByIdsAsync(createIssueRequest.LabelIds);
+            issueToCreate.Labels = labels.ToList();
+        }
 
         await issueRepository.CreateAsync(issueToCreate);
         await projectRepository.UpdateIssueCountAsync(project);

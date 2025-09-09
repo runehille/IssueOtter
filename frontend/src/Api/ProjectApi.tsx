@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ProjectGet, ProjectPost } from "../Models/Project";
+import { ProjectGet, ProjectPost, ProjectUpdate } from "../Models/Project";
 import BaseApiService from "./BaseApiService";
 
 export const getAllProjects = async (accessToken: string) => {
@@ -37,6 +37,32 @@ export const postProject = async (
       "/project",
       {
         key: project.key,
+        title: project.title,
+        description: project.description,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(error.message);
+    }
+  }
+};
+
+export const updateProject = async (
+  accessToken: string,
+  key: string,
+  project: ProjectUpdate
+) => {
+  try {
+    const data = await BaseApiService.put<ProjectGet>(
+      `/project/${key}`,
+      {
         title: project.title,
         description: project.description,
       },

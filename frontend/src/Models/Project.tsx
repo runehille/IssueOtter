@@ -10,3 +10,8 @@ export type ProjectPost = {
   title: string;
   description: string;
 };
+
+export type ProjectUpdate = {
+  title: string;
+  description: string;
+};

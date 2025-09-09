@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import IssuesListSkeleton from "./IssuesListSkeleton";
 import { getAllIssues } from "../../../../Api/IssueApi";
-import { IssueGet, IssueStatus } from "../../../../Models/Issue";
+import { IssueGet, IssueStatus, IssuePriority } from "../../../../Models/Issue";
 import { useAuth } from "../../../../hooks/useAuth";
 import { ProjectContext } from "../../Context/Context";
 import { Link } from "react-router-dom";
+import LabelBadge from "../../../../Components/Label/LabelBadge";
 
 const IssuesList = () => {
   const projectKey = useContext(ProjectContext);
@@ -43,8 +44,10 @@ const IssuesList = () => {
                 <tr>
                   <th>Key</th>
                   <th>Type</th>
+                  <th>Priority</th>
                   <th>Status</th>
                   <th>Title</th>
+                  <th>Labels</th>
                   <th>Assignee</th>
                   <th>Created</th>
                 </tr>
@@ -56,6 +59,26 @@ const IssuesList = () => {
                       <Link to={`${issue.key}`}>{issue.key}</Link>
                     </td>
                     <td>{issue.type}</td>
+                    <td>
+                      <p
+                        className={`${
+                          issue.priority === IssuePriority.Low
+                            ? "badge badge-ghost"
+                            : issue.priority === IssuePriority.Medium
+                            ? "badge badge-info"
+                            : issue.priority === IssuePriority.High
+                            ? "badge badge-warning"
+                            : issue.priority === IssuePriority.Critical
+                            ? "badge badge-error"
+                            : ""
+                        } font-semibold`}
+                      >
+                        {issue.priority === IssuePriority.Low ? "Low" :
+                         issue.priority === IssuePriority.Medium ? "Medium" :
+                         issue.priority === IssuePriority.High ? "High" :
+                         issue.priority === IssuePriority.Critical ? "Critical" : ""}
+                      </p>
+                    </td>
                     <td>
                       <p
                         className={`${
@@ -76,7 +99,17 @@ const IssuesList = () => {
                         <b>{issue.title}</b>
                       </Link>
                     </td>
-                    <td>{issue.assignee.firstName}</td>
+                    <td>
+                      <div className="flex flex-wrap gap-1">
+                        {issue.labels?.map((label) => (
+                          <LabelBadge key={label.id} label={label} size="sm" />
+                        ))}
+                        {(!issue.labels || issue.labels.length === 0) && (
+                          <span className="text-gray-400 text-sm">No labels</span>
+                        )}
+                      </div>
+                    </td>
+                    <td>{issue.assignee?.firstName || 'Unassigned'}</td>
                     <td>{issue.createdOn}</td>
                   </tr>
                 ))}

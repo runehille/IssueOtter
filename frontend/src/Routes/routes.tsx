@@ -4,15 +4,11 @@ import ProjectPage from "../Pages/ProjectPage/ProjectPage";
 import DashboardPage from "../Pages/DashboardPage/DashboardPage";
 import IssuesList from "../Pages/ProjectPage/Components/IssuesList/IssuesList";
 import Board from "../Pages/ProjectPage/Components/Board/Board";
-import LandingPage from "../Pages/LandingPage/LandingPage";
 import App from "../App";
 import CreateProject from "../Pages/DashboardPage/Components/CreateProject/CreateProject";
 import Default from "../Pages/DashboardPage/Components/Default/Default";
 import Issue from "../Pages/ProjectPage/Components/Issue/Issue";
 import Settings from "../Pages/ProjectPage/Components/Settings/Settings";
-
-const isDevMode = import.meta.env.VITE_REACT_APP_DEV_MODE === 'true';
-const skipAuth = import.meta.env.VITE_REACT_APP_SKIP_AUTH === 'true';
 
 // eslint-disable react-refresh/only-export-components
 const ProjectPageWrapper = () => {
@@ -28,19 +24,15 @@ const IssueWrapper = () => {
 const createRoutes = () => {
   const routes = [];
 
-  // Only include landing page in production or when auth is enabled
-  if (!isDevMode || !skipAuth) {
-    routes.push({
-      path: "/",
-      element: <LandingPage />,
-    });
-  }
-
-  // Main app routes
+  // Main app routes - always start at root
   routes.push({
-    path: isDevMode && skipAuth ? "/" : "app",
+    path: "/",
     element: <App />,
     children: [
+      {
+        path: "",
+        element: <Navigate to="/dashboard" />,
+      },
       {
         path: "dashboard",
         element: <DashboardPage />,
@@ -79,10 +71,10 @@ const createRoutes = () => {
     ],
   });
 
-  // Default redirect
+  // Default redirect for any unmatched routes
   routes.push({
     path: "*",
-    element: <Navigate to={isDevMode && skipAuth ? "/dashboard" : "app/dashboard"} />,
+    element: <Navigate to="/dashboard" />,
   });
 
   return routes;

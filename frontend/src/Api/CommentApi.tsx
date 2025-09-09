@@ -51,3 +51,24 @@ export const updateComment = async (
     }
   }
 };
+
+export const deleteComment = async (
+  accessToken: string,
+  commentId: number
+) => {
+  try {
+    const data = await BaseApiService.delete(
+      `/comment/${commentId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(error.message);
+    }
+  }
+};
