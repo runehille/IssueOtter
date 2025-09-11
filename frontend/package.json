@@ -13,7 +13,7 @@
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
     "@hookform/resolvers": "^3.3.4",
-    "axios": "^1.6.8",
+    "axios": "^1.8.2",
     "json-server": "^1.0.0-alpha.23",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
